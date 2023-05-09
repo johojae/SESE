@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <TableLayout
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerPadding="30dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/id_main_menu_scan"
+                android:layout_width="169dp"
+                android:layout_height="172dp"
+                app:srcCompat="@drawable/menu_img_scan"
+                tools:layout_editor_absoluteX="33dp"
+                tools:layout_editor_absoluteY="106dp" />
+
+            <ImageView
+                android:id="@+id/id_main_menu_recommend"
+                android:layout_width="172dp"
+                android:layout_height="155dp"
+                app:srcCompat="@drawable/menu_img_recommend"
+                tools:layout_editor_absoluteX="217dp"
+                tools:layout_editor_absoluteY="106dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/id_main_menu_category"
+                android:layout_width="235dp"
+                android:layout_height="171dp"
+                app:srcCompat="@drawable/menu_img_category"
+                tools:layout_editor_absoluteX="48dp"
+                tools:layout_editor_absoluteY="330dp" />
+
+            <ImageView
+                android:id="@+id/id_main_menu_store"
+                android:layout_width="159dp"
+                android:layout_height="141dp"
+                app:srcCompat="@drawable/menu_img_store"
+                tools:layout_editor_absoluteX="236dp"
+                tools:layout_editor_absoluteY="302dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/id_main_menu_my_beer"
+                android:layout_width="183dp"
+                android:layout_height="154dp"
+                app:srcCompat="@drawable/menu_img_my_beer"
+                tools:layout_editor_absoluteX="226dp"
+                tools:layout_editor_absoluteY="462dp"
+                android:layout_column="1"/>
+        </TableRow>
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
