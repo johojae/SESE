@@ -40,29 +40,29 @@ public class BeerClassifierActivity extends AppCompatActivity {
                     }
                 }
             }
-        } else { //error dialog Ç¥½Ã
+        } else { //error dialog í‘œì‹œ
             showErrorDialog();
         }
     }
 
 
-    private void showErrorDialog() { //¿¡·¯ ¹ß»ı
+    private void showErrorDialog() { //ì—ëŸ¬ ë°œìƒ
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(R.string.dialog_error_title).setMessage(R.string.dialog_error_try_again);
 
-        //»ç¿ëÀÚ°¡ Àç½ÃµµÇÏ°íÀÚ ÇÏ´Â °æ¿ì
+        //ì‚¬ìš©ìê°€ ì¬ì‹œë„í•˜ê³ ì í•˜ëŠ” ê²½ìš°
         builder.setPositiveButton(R.string.text_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 scanBeerBarcode();
             }
         });
-        //»ç¿ëÀÚ°¡ Àç½ÃµµÇÏ°íÀÚ ÇÏÁö ¾Ê´Â °æ¿ì 
+        //ì‚¬ìš©ìê°€ ì¬ì‹œë„í•˜ê³ ì í•˜ì§€ ì•ŠëŠ” ê²½ìš° 
         builder.setNegativeButton(R.string.text_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish(); //activity Á¾·á½ÃÅ´
+                finish(); //activity ì¢…ë£Œì‹œí‚´
             }
         });
 
