@@ -37,6 +37,7 @@ public class BeerClassifierActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
                         intent.putExtra(Constants.KEY_BARCODE, barcode);
                         startActivity(intent);
+                        finish(); //activity 종료시킴
                     }
                 }
             }

@@ -33,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                //test 기능
+                App app = (App)getApplication();
+                app.getSQLiteManager().saveRating("cass", 5);
+                app.getSQLiteManager().saveRating("hite", 10);
+
+                app.getSQLiteManager().getUserBeerList();
             }
         });
     }

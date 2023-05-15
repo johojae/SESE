@@ -16,8 +16,8 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_detail_beer_info">DetailBeerInfoActivity</string>
 
-    <string name="dialog_error_title">Error</string>
-    <string name="dialog_error_try_again">Do you want to try again?</string>
-    <string name="text_yes">Yes</string>
-    <string name="text_no">No</string>
+    <string name="dialog_error_title">에러</string>
+    <string name="dialog_error_try_again">다시 시도하시겠습니까?</string>
+    <string name="text_yes">네</string>
+    <string name="text_no">아니오</string>
 </resources>
