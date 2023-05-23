@@ -16,6 +16,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -29,9 +41,34 @@ android {
     buildFeatures {
         viewBinding true
     }
+    splits{
+        abi{
+            enable true
+            reset()
+            include 'x86','armeabi-v7a','x86_64'
+            universalApk true
+        }
+    }
 }
 
 dependencies {
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
+    implementation group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.11'
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore-nio
+    implementation group: 'org.apache.httpcomponents', name: 'httpcore-nio', version: '4.4.13'
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+    implementation group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.16'
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpasyncclient
+    implementation group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.4'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    implementation 'com.konghq:unirest-java:3.7.04'
+//    implementation 'com.microsoft.ews-java-api:ews-java-api:2.0'
+//    implementation("net.sourceforge.htmlunit:htmlunit-android:2.63.0")
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
@@ -42,9 +79,12 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.5.3'
     implementation files('libs\\libDaumMapAndroid.jar')
     implementation files('libs\\libDaumMapEngineApi.jar')
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation group: 'org.json', name: 'json', version: '20090211'
     implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
+
 }
