@@ -136,8 +136,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
     String APIKey = "c902cfe962c6fe2b91572930b36db204";
     private MapView mapView;
     private final String TAG = this.getClass().getSimpleName().trim().substring(0,22);
-    //BeerStoreManager beerStoreManager = new BeerStoreManager();
-//    ArrayList<Document> cafeList = new ArrayList<>(); //카페
+    List<BeerStoreManager.StoreData> storeDataList = new ArrayList<BeerStoreManager.StoreData>();
 
 //    @Data
     public class KakaoGeoRes {
@@ -209,11 +208,17 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
 
         Log.d(TAG, "resultText => " + resultText);
 
-        //List<BeerStoreManager.StoreData> storeDataList = beerStoreManager.makeStoreList(resultText);
 
-        //for (BeerStoreManager.StoreData storeData:storeDataList) {
-        //    Log.d(TAG, "storeData => " + storeData.logString());
-        //}
+        try {
+            storeDataList.addAll(new BeerStoreManager().makeStoreList(resultText));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        for (BeerStoreManager.StoreData storeData:storeDataList) {
+            Log.d(TAG, "storeData => " + storeData.logString());
+        }
     }
 
     //@Override

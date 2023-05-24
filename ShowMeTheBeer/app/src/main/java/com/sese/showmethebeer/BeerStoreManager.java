@@ -1,46 +1,95 @@
 package com.sese.showmethebeer;
 
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONException;
+import kong.unirest.json.JSONObject;
+
 public class BeerStoreManager {
-    String clientKey = "KakaoAK c902cfe962c6fe2b91572930b36db204";
-    //String address = "https://dapi.kakao.com/v2/local/search/keyword.json?";
-    String str;
-    String receiveMsg;
-    String SearchStores(double lat, double lng, int rad) {
+    class StoreData {
+        int distance;
+        String phone;
+        String place_name;
+        String address_name;
+        double lat;
+        double lng;
 
-        URL url = null;
+        int id;
+        String category_group_code;
+        String category_group_name;
+        String category_name;
+        String place_url;
+        String road_address_name;
+
+        String logString()
+        {
+            return "place_name : " + place_name + ", distance = " + distance;
+        }
+    }
+
+    List<StoreData> storeList = new ArrayList<StoreData>();
+    List<StoreData> makeStoreList(String jsonString)
+    {
+        JSONObject responseJson = new JSONObject(jsonString);
+        List<StoreData> tempStoreList = new ArrayList<StoreData>();
+
         try {
-            url = new URL("https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=호프"); // 서버 URL
+            JSONArray documents = responseJson.getJSONArray("documents");
+            for (int i = 0; i < documents.length(); i++) {
+                JSONObject data = documents.getJSONObject(i);
+                StoreData tempStoreData = new StoreData();
+                if(data.has("distance"))
+                    tempStoreData.distance = data.getInt("distance");
+                if(data.has("phone"))
+                    tempStoreData.phone = data.getString("phone");
+                if(data.has("place_name"))
+                    tempStoreData.place_name = data.getString("place_name");
+                if(data.has("address_name"))
+                    tempStoreData.address_name = data.getString("address_name");
+                if(data.has("lat"))
+                    tempStoreData.lat = data.getDouble("lat");
+                if(data.has("lng"))
+                    tempStoreData.lng = data.getDouble("lng");
+                if(data.has("id"))
+                    tempStoreData.id = data.getInt("id");
+                if(data.has("category_group_code"))
+                    tempStoreData.category_group_code = data.getString("category_group_code");
+                if(data.has("category_group_name"))
+                    tempStoreData.category_group_name = data.getString("category_group_name");
+                if(data.has("category_name"))
+                    tempStoreData.category_name = data.getString("category_name");
+                if(data.has("place_url"))
+                    tempStoreData.place_url = data.getString("place_url");
+                if(data.has("road_address_name"))
+                    tempStoreData.road_address_name = data.getString("road_address_name");
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-            conn.setRequestProperty("Authorization", clientKey);
-
-            if (conn.getResponseCode() == conn.HTTP_OK) {
-                InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
-                BufferedReader reader = new BufferedReader(tmp);
-                StringBuffer buffer = new StringBuffer();
-                while ((str = reader.readLine()) != null) {
-                    buffer.append(str);
-                }
-                receiveMsg = buffer.toString();
-                //Log.i("receiveMsg : ", receiveMsg);
-
-                reader.close();
-            } else {
-                //Log.i("결과", conn.getResponseCode() + "Error");
+                tempStoreList.add(tempStoreData);
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            storeList.addAll(tempStoreList);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return receiveMsg;
+        return storeList;
     }
+
+    void flushStoreList() {
+        storeList.clear();
+    }
+
+//        /* 키 해시 얻기*/
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("키해시는 :", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
 }
