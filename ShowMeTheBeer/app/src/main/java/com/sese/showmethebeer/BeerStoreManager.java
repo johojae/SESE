@@ -29,6 +29,7 @@ public class BeerStoreManager {
         }
     }
 
+    boolean is_end = false;
     List<StoreData> storeList = new ArrayList<StoreData>();
     List<StoreData> makeStoreList(String jsonString)
     {
@@ -36,6 +37,15 @@ public class BeerStoreManager {
         List<StoreData> tempStoreList = new ArrayList<StoreData>();
 
         try {
+            JSONObject meta = responseJson.getJSONObject("meta");
+            if(meta.has("is_end"))
+            {
+                if(meta.getBoolean("is_end"))
+                    is_end = true;
+            }
+            else
+                is_end = true;
+
             JSONArray documents = responseJson.getJSONArray("documents");
             for (int i = 0; i < documents.length(); i++) {
                 JSONObject data = documents.getJSONObject(i);
@@ -70,11 +80,11 @@ public class BeerStoreManager {
             storeList.addAll(tempStoreList);
         } catch (JSONException e) {
             e.printStackTrace();
+            is_end = true;
         }
 
         return storeList;
     }
-
     void flushStoreList() {
         storeList.clear();
     }

@@ -145,22 +145,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_store_manager);
 
-        BeerStoreManager3 beerStoreManager3 = new BeerStoreManager3(this);
-
-        double latitude = beerStoreManager3.getLatitude();
-        double longitude = beerStoreManager3.getLongitude();
-        MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
-
         mapView = new MapView(this);
-
-        //이 좌표로 지도 중심 이동
-        mapView.setMapCenterPoint(currentMapPoint, true);
-
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        mapView.setZoomLevel(2, true);
-        mapViewContainer.addView(mapView);
-
-        mapView.setCurrentLocationEventListener(this);
 
         if (!isPermissionGranted()){
             showDialogForLocationServiceSetting();}
@@ -168,7 +153,38 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
             checkRunTimePermission();
         }
 
-        firstMapShow = true;
+        MapPoint currentMapPoint;
+        try {
+            BeerStoreManager3 beerStoreManager3 = new BeerStoreManager3(this);
+
+            double latitude = beerStoreManager3.getLatitude();
+            double longitude = beerStoreManager3.getLongitude();
+            currentMapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
+            mapView.setMapCenterPoint(currentMapPoint, true);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            currentMapPoint = mapView.getMapCenterPoint();
+        }
+
+        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        mapView.setZoomLevel(2, true);
+        mapViewContainer.addView(mapView);
+
+        try {
+            storeDataList.addAll(new BeerStoreManager2(currentMapPoint.getMapPointGeoCoord().latitude, currentMapPoint.getMapPointGeoCoord().longitude, 20000).execute().get());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //(mapView, currentMapPoint.getMapPointGeoCoord().longitude, currentMapPoint.getMapPointGeoCoord().latitude);
+        for (BeerStoreManager.StoreData storeData:storeDataList) {
+            Log.d(TAG, "storeData => " + storeData.logString());
+            MapMarker(mapView, storeData.place_name, Integer.toString(storeData.distance), storeData.lng, storeData.lat);
+        }
+
+        //mapView.setCurrentLocationEventListener(this);
         //mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
     }
 
@@ -200,7 +216,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         String resultText = "[NULL]";
 
         try {
-            resultText = new BeerStoreManager2(mCurrentLat, mCurrentLng, 20000).execute().get();
+           // resultText = new BeerStoreManager2(mCurrentLat, mCurrentLng, 10000).execute().get();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -218,28 +234,8 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         int idx = 0;
         for (BeerStoreManager.StoreData storeData:storeDataList) {
             Log.d(TAG, "storeData => " + storeData.logString());
-            if(idx == 0)
-            {
-                Marker(mapView, "Marker", storeData.lng, storeData.lat);
-            }
-            else if(idx == 1)
-            {
                 MapMarker(mapView, "MapMarker", "test", storeData.lng, storeData.lat);
-            }
             idx = idx + 1;
-//            MapPoint mp = MapPoint.mapPointWithGeoCoord(storeData.lat, storeData.lng);
-//
-//            MapPOIItem customMarker = new MapPOIItem();
-//            customMarker.setItemName(storeData.logString());
-//            customMarker.setTag(1);
-//            customMarker.setMapPoint(mp);
-//            customMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 마커타입을 커스텀 마커로 지정.
-//            //customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-//            //customMarker.setCustomImageResourceId(R.drawable.custom_marker_red); // 마커 이미지.
-//            customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
-//            customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
-//
-//            mapView.addPOIItem(customMarker);
         }
 
 
@@ -266,7 +262,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
     void checkRunTimePermission() {
         int hasFineLocationPermission = ContextCompat.checkSelfPermission(BeerStoreManagerActivity.this,Manifest.permission.ACCESS_FINE_LOCATION);
         if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED){
-            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
         }else{
             if(ActivityCompat.shouldShowRequestPermissionRationale(BeerStoreManagerActivity.this,REQUIRED_PERMISSIONS[0])){
                 Toast.makeText(BeerStoreManagerActivity.this,"이 앱을 실행하려면 위치 접근 권한이 필요합니다.",Toast.LENGTH_LONG).show();
@@ -326,20 +322,6 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         return true;
     }
 
-    public void Marker(MapView mapView, String MakerName, double startX, double startY) {
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord( startY, startX );
-        //mapView.setMapCenterPoint( mapPoint, true );
-        //true면 앱 실행 시 애니메이션 효과가 나오고 false면 애니메이션이 나오지않음.
-        MapPOIItem marker = new MapPOIItem();
-        marker.setItemName(MakerName); // 마커 클릭 시 컨테이너에 담길 내용
-        marker.setMapPoint( mapPoint );
-        // 기본으로 제공하는 BluePin 마커 모양.
-        marker.setMarkerType( MapPOIItem.MarkerType.RedPin );
-        // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-        marker.setSelectedMarkerType( MapPOIItem.MarkerType.BluePin );
-        mapView.addPOIItem( marker );
-    }
-
     public void MapMarker(MapView mapView, String MakerName, String detail, double startX, double startY) {
         MapPoint mapPoint = MapPoint.mapPointWithGeoCoord( startY, startX );
         //mapView.setMapCenterPoint( mapPoint, true );
@@ -351,6 +333,19 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         marker.setMarkerType( MapPOIItem.MarkerType.RedPin );
         // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
         marker.setSelectedMarkerType( MapPOIItem.MarkerType.BluePin );
+        mapView.addPOIItem( marker );
+    }
+    public void CenterMarker(MapView mapView, double startX, double startY) {
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord( startY, startX );
+        //mapView.setMapCenterPoint( mapPoint, true );
+        //true면 앱 실행 시 애니메이션 효과가 나오고 false면 애니메이션이 나오지않음.
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName("내 위치"); // 마커 클릭 시 컨테이너에 담길 내용
+        marker.setMapPoint( mapPoint );
+        // 기본으로 제공하는 BluePin 마커 모양.
+        marker.setMarkerType( MapPOIItem.MarkerType.YellowPin );
+        // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        marker.setSelectedMarkerType( MapPOIItem.MarkerType.YellowPin );
         mapView.addPOIItem( marker );
     }
 }
