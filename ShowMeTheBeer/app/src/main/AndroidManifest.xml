@@ -69,6 +69,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".BeerListActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.internal.action.BEER_LIST" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".DetailBeerInfoActivity"
             android:exported="false">
             <intent-filter>

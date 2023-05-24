@@ -1,0 +1,341 @@
+{
+    "count": 8,
+    "category": [
+        {
+            "id": "lager",
+            "name": "라거",
+            "count": 9,
+            "list": [
+                {
+                    "id": "lager_1",
+                    "name": "라거"
+                },
+                {
+                    "id": "lager_2",
+                    "name": "페일 라거"
+                },
+                {
+                    "id": "lager_3",
+                    "name": "헬레스 라거"
+                },
+                {
+                    "id": "lager_4",
+                    "name": "엠버 라거"
+                },
+                {
+                    "id": "lager_5",
+                    "name": "멕시칸 라거"
+                },
+                {
+                    "id": "lager_6",
+                    "name": "임페리얼 라거"
+                },
+                {
+                    "id": "lager_7",
+                    "name": "다크 라거"
+                },
+                {
+                    "id": "lager_8",
+                    "name": "필스너"
+                },
+                {
+                    "id": "lager_9",
+                    "name": "둥켈"
+                }
+            ]
+        },
+        {
+            "id": "wheat",
+            "name": "위트에일",
+            "count": 12,
+            "list": [
+                {
+                    "id": "wheat_1",
+                    "name": "윗비어"
+                },
+                {
+                    "id": "wheat_2",
+                    "name": "바이젠"
+                },
+                {
+                    "id": "wheat_3",
+                    "name": "크리스탈 바이젠"
+                },
+                {
+                    "id": "wheat_4",
+                    "name": "헤페 바이젠"
+                },
+                {
+                    "id": "wheat_5",
+                    "name": "알트비어"
+                },
+                {
+                    "id": "wheat_6",
+                    "name": "둥켈 바이젠"
+                },
+                {
+                    "id": "wheat_7",
+                    "name": "슈바르츠비어"
+                },
+                {
+                    "id": "wheat_8",
+                    "name": "메르첸"
+                },
+                {
+                    "id": "wheat_9",
+                    "name": "세종"
+                },
+                {
+                    "id": "wheat_10",
+                    "name": "그리셋"
+                },
+                {
+                    "id": "wheat_11",
+                    "name": "베를리너 바이세"
+                },
+                {
+                    "id": "wheat_12",
+                    "name": "고제"
+                }
+            ]
+        },
+        {
+            "id": "ale",
+            "name": "에일",
+            "count": 19,
+            "list": [
+                {
+                    "id": "ale_1",
+                    "name": "쾰쉬"
+                },
+                {
+                    "id": "ale_2",
+                    "name": "페일 에일"
+                },
+                {
+                    "id": "ale_3",
+                    "name": "엠버 에일"
+                },
+                {
+                    "id": "ale_4",
+                    "name": "블론드 에일"
+                },
+                {
+                    "id": "ale_5",
+                    "name": "브라운 에일"
+                },
+                {
+                    "id": "ale_6",
+                    "name": "골든 에일"
+                },
+                {
+                    "id": "ale_7",
+                    "name": "크림 에일"
+                },
+                {
+                    "id": "ale_8",
+                    "name": "위트 에일"
+                },
+                {
+                    "id": "ale_9",
+                    "name": "올드 에일"
+                },
+                {
+                    "id": "ale_10",
+                    "name": "스카치 에일"
+                },
+                {
+                    "id": "ale_11",
+                    "name": "아이리시 에일"
+                },
+                {
+                    "id": "ale_12",
+                    "name": "잉글리시 스트롱 에일"
+                },
+                {
+                    "id": "ale_13",
+                    "name": "아메리칸 스트롱 에일"
+                },
+                {
+                    "id": "ale_14",
+                    "name": "와일드 에일"
+                },
+                {
+                    "id": "ale_15",
+                    "name": "벨지안 에일"
+                },
+                {
+                    "id": "ale_16",
+                    "name": "벨지안 스트롱 에일"
+                },
+                {
+                    "id": "ale_17",
+                    "name": "두벨"
+                },
+                {
+                    "id": "ale_18",
+                    "name": "트리펠"
+                },
+                {
+                    "id": "ale_19",
+                    "name": "쿼드루펠"
+                }
+            ]
+        },
+        {
+            "id": "ipa",
+            "name": "IPA",
+            "count": 6,
+            "list": [
+                {
+                    "id": "ipa_1",
+                    "name": "IPA"
+                },
+                {
+                    "id": "ipa_2",
+                    "name": "세션 IPA"
+                },
+                {
+                    "id": "ipa_3",
+                    "name": "더블 IPA"
+                },
+                {
+                    "id": "ipa_4",
+                    "name": "임페리얼 IPA"
+                },
+                {
+                    "id": "ipa_5",
+                    "name": "와일드 IPA"
+                },
+                {
+                    "id": "ipa_6",
+                    "name": "다크 IPA"
+                }
+            ]
+        },
+        {
+            "id": "stout",
+            "name": "스타우트/포터",
+            "count": 6,
+            "list": [
+                {
+                    "id": "stout_1",
+                    "name": "스타우트"
+                },
+                {
+                    "id": "stout_2",
+                    "name": "임페리얼 스타우트"
+                },
+                {
+                    "id": "stout_3",
+                    "name": "와일드 임페리얼 스타우트"
+                },
+                {
+                    "id": "stout_4",
+                    "name": "포터"
+                },
+                {
+                    "id": "stout_5",
+                    "name": "발틱 포터"
+                },
+                {
+                    "id": "stout_6",
+                    "name": "임페리얼 포터"
+                }
+            ]
+        },
+        {
+            "id": "bock",
+            "name": "복",
+            "count": 6,
+            "list": [
+                {
+                    "id": "bock_1",
+                    "name": "복"
+                },
+                {
+                    "id": "bock_2",
+                    "name": "바이젠 복"
+                },
+                {
+                    "id": "bock_3",
+                    "name": "우어 복"
+                },
+                {
+                    "id": "bock_4",
+                    "name": "마이 복"
+                },
+                {
+                    "id": "bock_5",
+                    "name": "아이스 복"
+                },
+                {
+                    "id": "bock_6",
+                    "name": "도펠 복"
+                }
+            ]
+        },
+        {
+            "id": "lambic",
+            "name": "람빅/사워",
+            "count": 6,
+            "list": [
+                {
+                    "id": "Lambic_1",
+                    "name": "람빅"
+                },
+                {
+                    "id": "Lambic_2",
+                    "name": "파로 람빅"
+                },
+                {
+                    "id": "Lambic_3",
+                    "name": "프루티드 람빅"
+                },
+                {
+                    "id": "Lambic_4",
+                    "name": "언블렌디드 람빅"
+                },
+                {
+                    "id": "Lambic_5",
+                    "name": "괴즈"
+                },
+                {
+                    "id": "Lambic_6",
+                    "name": "사워"
+                }
+            ]
+        },
+        {
+            "id": "etc",
+            "name": "기타",
+            "count": 5,
+            "list": [
+                {
+                    "id": "etc_1",
+                    "name": "발리 와인"
+                },
+                {
+                    "id": "etc_2",
+                    "name": "프루트 비어"
+                },
+                {
+                    "id": "etc_3",
+                    "name": "라들러"
+                },
+                {
+                    "id": "etc_4",
+                    "name": "스모크 비어"
+                },
+                {
+                    "id": "etc_5",
+                    "name": "논알콜"
+                },
+                {
+                    "id": "etc_6",
+                    "name": "기타"
+                }
+            ]
+        }
+    ]
+}
