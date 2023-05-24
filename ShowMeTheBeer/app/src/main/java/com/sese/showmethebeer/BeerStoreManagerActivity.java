@@ -2,6 +2,7 @@ package com.sese.showmethebeer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
@@ -135,31 +136,25 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     String APIKey = "c902cfe962c6fe2b91572930b36db204";
     private MapView mapView;
+
+    boolean firstMapShow;
     private final String TAG = this.getClass().getSimpleName().trim().substring(0,22);
     List<BeerStoreManager.StoreData> storeDataList = new ArrayList<BeerStoreManager.StoreData>();
-
-//    @Data
-    public class KakaoGeoRes {
-        private HashMap<String, Object> meta;
-        private List<Documents> documents;
-    }
-
-//    @Data
-    class Documents {
-        private HashMap<String, Object> address;
-        private String address_type;
-        private Double x;
-        private Double y;
-        private String address_name;
-        private HashMap<String, Object> road_address;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_store_manager);
 
+        BeerStoreManager3 beerStoreManager3 = new BeerStoreManager3(this);
+
+        double latitude = beerStoreManager3.getLatitude();
+        double longitude = beerStoreManager3.getLongitude();
+        MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
+
         mapView = new MapView(this);
+
+        //이 좌표로 지도 중심 이동
+        mapView.setMapCenterPoint(currentMapPoint, true);
 
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
         mapView.setZoomLevel(2, true);
@@ -173,9 +168,8 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
             checkRunTimePermission();
         }
 
-        //setCurrentLocationTrackingMode (지도랑 현재위치 좌표 찍어주고 따라다닌다.)
-//        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
+        firstMapShow = true;
+        //mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
     }
 
     // 현재 위치 업데이트 setCurrentLocationEventListener
@@ -184,18 +178,24 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+
         //이 좌표로 지도 중심 이동
-        mapView.setMapCenterPoint(currentMapPoint, true);
+        if(firstMapShow)
+            mapView.setMapCenterPoint(currentMapPoint, true);
+
+        firstMapShow = false;
+
         //전역변수로 현재 좌표 저장
         double mCurrentLat = mapPointGeo.latitude;
         double mCurrentLng = mapPointGeo.longitude;
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
         //mLoaderLayout.setVisibility(View.GONE);
         //mapView.setVisibility(View.GONE);
-//        //트래킹 모드가 아닌 단순 현재위치 업데이트일 경우, 한번만 위치 업데이트하고 트래킹을 중단시키기 위한 로직
-//        if (!isTrackingMode) {
-//            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
-//        }
+
+        MapPoint.GeoCoordinate centerPt = mapView.getMapCenterPoint().getMapPointGeoCoord();
+        mCurrentLat = centerPt.latitude;
+        mCurrentLng = centerPt.longitude;
+        Log.d(TAG, "지도위치 => " + mCurrentLat + "  " + mCurrentLng);
 
         String resultText = "[NULL]";
 
@@ -208,17 +208,42 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
 
         Log.d(TAG, "resultText => " + resultText);
 
-
         try {
             storeDataList.addAll(new BeerStoreManager().makeStoreList(resultText));
         }
-        catch (Exception e){
+        catch (Exception e) {
             e.printStackTrace();
         }
 
+        int idx = 0;
         for (BeerStoreManager.StoreData storeData:storeDataList) {
             Log.d(TAG, "storeData => " + storeData.logString());
+            if(idx == 0)
+            {
+                Marker(mapView, "Marker", storeData.lng, storeData.lat);
+            }
+            else if(idx == 1)
+            {
+                MapMarker(mapView, "MapMarker", "test", storeData.lng, storeData.lat);
+            }
+            idx = idx + 1;
+//            MapPoint mp = MapPoint.mapPointWithGeoCoord(storeData.lat, storeData.lng);
+//
+//            MapPOIItem customMarker = new MapPOIItem();
+//            customMarker.setItemName(storeData.logString());
+//            customMarker.setTag(1);
+//            customMarker.setMapPoint(mp);
+//            customMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 마커타입을 커스텀 마커로 지정.
+//            //customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+//            //customMarker.setCustomImageResourceId(R.drawable.custom_marker_red); // 마커 이미지.
+//            customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+//            customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+//
+//            mapView.addPOIItem(customMarker);
         }
+
+
+
     }
 
     //@Override
@@ -299,5 +324,33 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
             }
         }
         return true;
+    }
+
+    public void Marker(MapView mapView, String MakerName, double startX, double startY) {
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord( startY, startX );
+        //mapView.setMapCenterPoint( mapPoint, true );
+        //true면 앱 실행 시 애니메이션 효과가 나오고 false면 애니메이션이 나오지않음.
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName(MakerName); // 마커 클릭 시 컨테이너에 담길 내용
+        marker.setMapPoint( mapPoint );
+        // 기본으로 제공하는 BluePin 마커 모양.
+        marker.setMarkerType( MapPOIItem.MarkerType.RedPin );
+        // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        marker.setSelectedMarkerType( MapPOIItem.MarkerType.BluePin );
+        mapView.addPOIItem( marker );
+    }
+
+    public void MapMarker(MapView mapView, String MakerName, String detail, double startX, double startY) {
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord( startY, startX );
+        //mapView.setMapCenterPoint( mapPoint, true );
+        //true면 앱 실행 시 애니메이션 효과가 나오고 false면 애니메이션이 나오지않음.
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName(MakerName+"("+detail+")"); // 마커 클릭 시 컨테이너에 담길 내용
+        marker.setMapPoint( mapPoint );
+        // 기본으로 제공하는 BluePin 마커 모양.
+        marker.setMarkerType( MapPOIItem.MarkerType.RedPin );
+        // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        marker.setSelectedMarkerType( MapPOIItem.MarkerType.BluePin );
+        mapView.addPOIItem( marker );
     }
 }

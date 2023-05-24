@@ -48,10 +48,10 @@ public class BeerStoreManager {
                     tempStoreData.place_name = data.getString("place_name");
                 if(data.has("address_name"))
                     tempStoreData.address_name = data.getString("address_name");
-                if(data.has("lat"))
-                    tempStoreData.lat = data.getDouble("lat");
-                if(data.has("lng"))
-                    tempStoreData.lng = data.getDouble("lng");
+                if(data.has("y"))
+                    tempStoreData.lat = data.getDouble("y");
+                if(data.has("x"))
+                    tempStoreData.lng = data.getDouble("x");
                 if(data.has("id"))
                     tempStoreData.id = data.getInt("id");
                 if(data.has("category_group_code"))
