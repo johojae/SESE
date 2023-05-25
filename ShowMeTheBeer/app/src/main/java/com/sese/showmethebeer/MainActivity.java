@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
         menuStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), BeerStoreManagerActivity.class);
+                //Intent intent = new Intent(getApplicationContext(), BeerStoreManagerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BeerStoreViewpagerManagerActivity.class);
                 startActivity(intent);
             }
         });
