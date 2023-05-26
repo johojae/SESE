@@ -143,7 +143,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beer_store_manager);
+        setContentView(R.layout.activity_beer_store_manager_frag1_map);
 
         mapView = new MapView(this);
 
