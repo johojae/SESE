@@ -46,7 +46,7 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapte
             holder.mArrowImage.setImageResource(R.drawable.arrow_down);
         }
 
-        CategoryNestedAdapter adapter = new CategoryNestedAdapter(list);
+        CategoryNestedAdapter adapter = new CategoryNestedAdapter(list, model.getItemText());
         holder.nestedRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.nestedRecyclerView.setHasFixedSize(true);
         holder.nestedRecyclerView.setAdapter(adapter);

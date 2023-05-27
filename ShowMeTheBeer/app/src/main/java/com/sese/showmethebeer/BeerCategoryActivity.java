@@ -1,12 +1,15 @@
 package com.sese.showmethebeer;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -118,7 +121,29 @@ public class BeerCategoryActivity extends AppCompatActivity {
 
         adapter = new CategoryItemAdapter(mList);
         recyclerView.setAdapter(adapter);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.searchbar_menu, menu);
+        MenuItem menuItem = menu.findItem((R.id.search));
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Search here");
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+            @Override
+            public boolean onQueryTextSubmit(String query){
+                Log.v("hojae", query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText){
+                return false;
+            }
+
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 }

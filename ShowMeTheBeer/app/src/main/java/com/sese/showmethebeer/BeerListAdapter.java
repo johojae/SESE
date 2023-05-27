@@ -17,7 +17,6 @@ public class BeerListAdapter extends ArrayAdapter<BeerModel> {
 
     public BeerListAdapter(@NonNull Context context, ArrayList<BeerModel> beerModels){
         super(context, 0, beerModels);
-        Log.v("맥주리스트", "7번");
     }
 
 
@@ -25,8 +24,6 @@ public class BeerListAdapter extends ArrayAdapter<BeerModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         HolderView holderView;
-
-        Log.v("맥주리스트", "3번");
 
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.grid_view_beer_item_list, parent, false);
@@ -37,8 +34,6 @@ public class BeerListAdapter extends ArrayAdapter<BeerModel> {
         else{
             holderView = (HolderView) convertView.getTag();
         }
-
-        Log.v("맥주리스트", "4번");
 
         BeerModel model = getItem(position);
         holderView.icons.setImageResource(model.getIconId());

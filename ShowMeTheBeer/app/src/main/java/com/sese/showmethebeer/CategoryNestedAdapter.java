@@ -16,9 +16,12 @@ import java.util.List;
 public class CategoryNestedAdapter extends RecyclerView.Adapter<CategoryNestedAdapter.NestedViewHolder> {
 
     private Context mContext;
+
+    private String parentCategory;
     private List<NestedList> mList;
 
-    public CategoryNestedAdapter(List<NestedList> mList){
+    public CategoryNestedAdapter(List<NestedList> mList, String parentCategory){
+        this.parentCategory = parentCategory;
         this.mList = mList;
     }
     @NonNull
@@ -49,50 +52,16 @@ public class CategoryNestedAdapter extends RecyclerView.Adapter<CategoryNestedAd
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    Log.d("hojae", "position = " + position + " mText:" + mList.get(position).nestedName);
+                    //Log.d("hojae", "position = " + position + " parent:" +parentCategory + " mText:" + mList.get(position).nestedName);
 
                     Intent intent = new Intent(v.getContext(), BeerListActivity.class);
+
+                    intent.putExtra("caller", "category");
+                    intent.putExtra("parentCategory", parentCategory);
+                    intent.putExtra("detailCategory", mList.get(position).nestedName);
                     v.getContext().startActivity(intent);
-
-                    //if(mContext instanceof BeerListActivity){
-                    //    Intent intent = new Intent(mContext, BeerListActivity.class);
-                    //    ((BeerListActivity)mContext).startActivity(intent);
-                    //}
-
-
-                    //Intent intent = new Intent(mContext, BeerListActivity.class);
-                    //startActivity(intent);
-
-                    //if(mListener != null)
-                    //{
-                    //    mListener.onItemClick(v, position);
-                    //}
                 }
             }));
-
-
-
-            /*
-            itemView.setOn(new View.OnClickListener(){
-                @Override
-                public void onClick(View view)
-                {
-                    int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION){
-
-                    }
-                }
-            });
-
-             */
         }
-    }
-    private OnItemClickListener mListener = null;
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.mListener = listener ;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View v, int position) ;
     }
 }
