@@ -1,9 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DetailBeerInfoActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:id="@+id/topLayOut"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#BABAED">
+    <ImageView
+        android:id="@+id/beerImageView"
+        android:layout_width="233dp"
+        android:layout_height="236dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/app_icon" />
+    </RelativeLayout>
+    <!--android:layout_marginLeft="112dp"
+        android:layout_marginTop="10dp"-->
+
+    <TableLayout
+        android:id="@+id/beerNameLayout"
+        android:layout_width= "wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topLayOut"
+        android:layout_marginLeft="20dp">
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/beerNameText"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/topLayOut"
+            android:textStyle="bold"
+            android:textSize="33dp" />
+
+        <ImageView
+            android:id="@+id/markingStateView"
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="3dp"
+            app:srcCompat="@drawable/book_unmarked" />
+    </TableRow>
+    </TableLayout>
+
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@id/beerNameLayout"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="0.5"/>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/ratingBar">
+        <RelativeLayout
+                android:id="@+id/BottomLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/informationTextImg"
+            android:layout_width="400px"
+            android:layout_height="200px"
+            android:layout_marginLeft="20dp"
+            app:srcCompat="@drawable/information_text_img" />
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width= "wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@id/informationTextImg">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/categoryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="카테고리 |" />
+
+                <TextView
+                    android:id="@+id/categoryTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/alcoholicityText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="도수 |" />
+
+                <TextView
+                    android:id="@+id/alcoholicityTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/refreshMentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="청량감 |" />
+                <TextView
+                    android:id="@+id/refreshMentTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+                <ImageView
+                    android:id="@+id/refreshMentImageView"
+                    android:layout_width="250px"
+                    android:layout_height="70px"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/countryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="국가 |" />
+                <TextView
+                    android:id="@+id/countryTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/manufactureText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="제조사 |" />
+
+                <TextView
+                    android:id="@+id/manufactureTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/beerDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tableLayout"
+            android:text="TextView"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:paddingTop="20dp"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/scanFloatingBt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="bottom|end"
+        app:srcCompat="@drawable/barcode_product_fab_icon" />
+</RelativeLayout>

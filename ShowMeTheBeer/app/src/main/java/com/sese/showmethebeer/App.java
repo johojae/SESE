@@ -2,9 +2,11 @@ package com.sese.showmethebeer;
 
 import android.app.Application;
 
+import com.sese.showmethebeer.serverConn.ServerManager;
 import com.sese.showmethebeer.sqlite.SQLiteManager;
 
 public class App extends Application {
+    ServerManager objServerMngr;
     SQLiteManager objSQLiteMngr;
 
     public App() {
@@ -15,11 +17,15 @@ public class App extends Application {
     public void	onCreate() {
         super.onCreate();
         System.out.println("onCreate");
-        objSQLiteMngr = new SQLiteManager(getApplicationContext());
+        objSQLiteMngr = new SQLiteManager(this, getApplicationContext());
+        objServerMngr = new ServerManager(this, getApplicationContext());
     }
 
 
-    public SQLiteManager getSQLiteManager(){
+    public ServerManager getServerMngr() {
+        return objServerMngr;
+    }
+    public SQLiteManager getSQLiteManager() {
         return objSQLiteMngr;
     }
 }

@@ -1,17 +1,56 @@
 package com.sese.showmethebeer.data;
 
+import com.sese.showmethebeer.Constants;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class BeerInfo {
-    private String beerId;
-    private String name;
-    private String category;
-    private String thumbnail;
-    private String country;
+    protected String beerId;
+    protected String name;
+    protected String category; //안쓸듯
+    protected String categoryId;
+    protected String thumbnail;
+    protected String country;
 
     public BeerInfo(JSONObject jsonObj) {
-        //TODO :: parsing해서 값 채워 넣어야 함
+        // {
+        //                "id": "800010000001",
+        //                "name": "버드와이저",
+        //                "iconUrl": "https://assets.business.veluga.kr/media/public/%E1%84%87%E1%85%A5%E1%84%83%E1%85%B3_%E1%84%8B%E1%85%A1%E1%8 "manufacturer": "오비맥주",
+        //                "alcoholVolume": "5.0",
+        //                "categoryId": "lager_1",
+        //                "categoryName": "라거",
+        //                "description": "미국을 대표하는 맥주로, 매년 미국에서 판매량 1위를 놓치지 않는 앤하이저부시의 대표적인 상품이다."
+        //                }
+        //
+        try {
+            beerId = jsonObj.getString(Constants.KEY_SERVER_ID);
+        } catch (Exception e) {
+        }
+
+        try {
+            name = jsonObj.getString(Constants.KEY_SERVER_BEER_NAME);
+        } catch (Exception e) {
+        }
+
+        try {
+            categoryId = jsonObj.getString(Constants.KEY_SERVER_CATEGORY_ID);
+        } catch (Exception e) {
+        }
+
+        try {
+            thumbnail = jsonObj.getString(Constants.KEY_SERVER_ICON);
+        } catch (Exception e) {
+        }
+
+        try {
+            country = jsonObj.getString(Constants.KEY_SERVER_COUNTRY);
+        } catch (Exception e) {
+        }
+    }
+
+    public BeerInfo() { //test code
 
     }
 
@@ -27,6 +66,10 @@ public class BeerInfo {
         return category;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
     public String getThumbnail() {
         return thumbnail;
     }
@@ -34,5 +77,6 @@ public class BeerInfo {
     public String getCountry() {
         return country;
     }
+
 
 }

@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.sese.showmethebeer.databinding.ActivityMainBinding;
@@ -16,6 +17,8 @@ import com.sese.showmethebeer.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    Button hiddenMenuButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,26 +28,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         showMenu();
+        showFloatingActionButton();
 
-        FloatingActionButton fab = binding.fab;
-
-        fab.setOnClickListener(new View.OnClickListener() {
+        hiddenMenuButton = binding.getRoot().getRootView().findViewById(R.id.hiddenMenuButton);
+        hiddenMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                //test 기능
-                App app = (App)getApplication();
-                app.getSQLiteManager().saveRating("cass", 5);
-                app.getSQLiteManager().saveRating("hite", 10);
-
-                app.getSQLiteManager().getUserBeerList();
+                Intent intent = new Intent(getApplicationContext(), HiddenMenuActivity.class);
+                startActivity(intent);
             }
         });
     }
-
-    private void showMenu(){
+    private void showMenu() {
         ImageView menuScan = binding.getRoot().getRootView().findViewById(R.id.id_main_menu_scan);
         menuScan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,4 +85,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showFloatingActionButton() {
+        FloatingActionButton fab = binding.fab;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                //test 기능
+                App app = (App) getApplication();
+                app.getSQLiteManager().saveRating("cass", 5);
+                app.getSQLiteManager().saveRating("hite", 10);
+
+                app.getSQLiteManager().getUserBeerList();
+            }
+        });
+
+        FloatingActionButton fab2 = binding.fab2;
+        fab2.setOnClickListener(new View.OnClickListener() { //DetailBeerInfoActivity를 띄우기 위한 임의 코드
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
+                intent.putExtra(Constants.KEY_BARCODE, "test");
+                startActivity(intent);
+            }
+        });
+    }
+
 }
