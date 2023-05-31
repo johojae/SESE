@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.google.zxing.common.StringUtils;
+import com.sese.showmethebeer.App;
 import com.sese.showmethebeer.data.UserBeerInfo;
 
 import java.util.ArrayList;
@@ -12,18 +13,20 @@ import java.util.ArrayList;
 public class SQLiteManager extends SQLiteDBOpenHelper {
 
     private SQLiteDatabase db;
+    private App app = null;
 
-    public SQLiteManager(Context context) {
+    public SQLiteManager(App app, Context context) {
         super(context);
         // 데이터를 쓰고 읽기 위해서 db 열기
         db = getWritableDatabase();
+        this.app = app;
     }
 
 
     public boolean saveRating(String beerId, int rate) {
-        if (rate < 0) {
+        /*if (rate < 0) {
             db.execSQL("DELETE FROM " + TABLE_RATING + " WHERE " +  KEY_BEERID + "='" + beerId +"'");
-        } else {
+        } else {*/
             Cursor mCursor = db.rawQuery("SELECT * FROM " + TABLE_RATING + " WHERE " + KEY_BEERID + "='" + beerId +"'", null);
             if (mCursor.moveToFirst()) { //이미 기존에 존재 하는 경우
                 db.execSQL("UPDATE " + TABLE_RATING + " SET " + KEY_RATING + "=" + rate + " WHERE " + KEY_BEERID + "='" + beerId +"'");
@@ -31,8 +34,13 @@ public class SQLiteManager extends SQLiteDBOpenHelper {
                 db.execSQL("INSERT INTO " + TABLE_RATING + " VALUES('" + beerId + "'," + rate + ")");
             }
             mCursor.close();
-        }
+        //}
 
+        return true;
+    }
+
+    public boolean deleteBeer(String beerId) {
+        db.execSQL("DELETE FROM " + TABLE_RATING + " WHERE " +  KEY_BEERID + "='" + beerId +"'");
         return true;
     }
     
@@ -99,21 +107,28 @@ public class SQLiteManager extends SQLiteDBOpenHelper {
         return true;
     }
 
-/*
+    public String getServerIpAddress() {
+        String serverIpAddr = null;
+        Cursor mCursor = db.rawQuery("SELECT " + KEY_SERVER_IP + " FROM " + TABLE_INTERNAL_SETTING, null);
+        if (mCursor.moveToFirst()) { //기존에 존재하는 경우
+            serverIpAddr =  mCursor.getString(mCursor.getColumnIndexOrThrow(KEY_SERVER_IP));
+        }
+        mCursor.close();
 
-    public void insert(int column1, String column2, double column3, String column4) {
-        // 데이터 쓰기
-        //db.execSQL("INSERT INTO mytable VALUES(" + id + ",'" + column1 + "','" + column2 + "','" + column3 + "','" + column4 + "')");
+        return serverIpAddr;
     }
 
-    public void update(int column1, String column2, double column3, String column4) {
-        // 조건에 일치하는 행의 데이터 변경
-        //db.execSQL("UPDATE mytable SET column2='" + column2 + "',column3='" + column3 + "',column4='" + column4 + "' WHERE column1=" + column1);
-    }
+    public boolean updateServerIpsAddress(String ipAddr) {
 
-    public void delete(int column1) {
-        // 조건에 일치하는 행을 삭제
-        //db.execSQL("DELETE FROM mytable WHERE column1=" + column1);
+        Cursor mCursor = db.rawQuery("SELECT * FROM " + TABLE_INTERNAL_SETTING, null);
+        if (mCursor.moveToFirst()) { //이미 기존에 존재하는 경우
+            db.execSQL("UPDATE " + TABLE_INTERNAL_SETTING + " SET " + KEY_SERVER_IP + "=" + ipAddr);
+        } else {
+            db.execSQL("INSERT INTO " + TABLE_INTERNAL_SETTING + " VALUES('" + KEY_SERVER_IP + "'," + 0 + ")");
+        }
+        mCursor.close();
+
+        app.getServerMngr().updateServerIpAddress(ipAddr);
+        return true;
     }
-*/
 }

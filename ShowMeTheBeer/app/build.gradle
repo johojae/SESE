@@ -47,4 +47,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation group: 'org.json', name: 'json', version: '20090211'
     implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 }

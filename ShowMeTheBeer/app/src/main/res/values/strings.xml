@@ -16,8 +16,19 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_detail_beer_info">DetailBeerInfoActivity</string>
 
-    <string name="dialog_error_title">����</string>
-    <string name="dialog_error_try_again">�ٽ� �õ��Ͻðڽ��ϱ�?</string>
-    <string name="text_yes">��</string>
-    <string name="text_no">�ƴϿ�</string>
+    <string name="dialog_error_title">에러</string>
+    <string name="dialog_error_try_again">다시 시도하시겠습니까?</string>
+    <string name="text_yes">네</string>
+    <string name="text_no">아니오</string>
+    <string name="dialog_info_title">안내</string>
+    <string name="dialog_delete_confirm">My Beer에서 삭제하시겠습니까? 평가 정보도 함께 삭제됩니다.</string>
+    <string name="text_save_beer">My Beer에 저장했습니다</string>
+    <string name="text_delete_beer">My Beer에 저장했습니다</string>
+    <string name="text_save_rating">My Beer에 평가를 저장했습니다</string>
+
+    <string name="refreshness1_info">낮음</string>
+    <string name="refreshness2_info">약간 낮음</string>
+    <string name="refreshness3_info">보통</string>
+    <string name="refreshness4_info">약간 높음</string>
+    <string name="refreshness5_info">높음</string>
 </resources>
