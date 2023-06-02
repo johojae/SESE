@@ -48,4 +48,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20090211'
     implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.inkapplications.viewpageindicator:library:2.4.3'
+    implementation 'me.relex:circleindicator:2.1.6'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
 }

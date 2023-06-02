@@ -31,6 +31,7 @@ public class BeerCategoryActivity extends AppCompatActivity {
 
     private List<CategoryItem> categoryItemLists;
 
+    /*
     private String getJsonString()
     {
         String json = "";
@@ -93,6 +94,7 @@ public class BeerCategoryActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +106,9 @@ public class BeerCategoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         categoryItemLists = new ArrayList<>();
-        jsonParsing(getJsonString());
+        //jsonParsing(getJsonString());
+        BeerCategoryJsonParser beerCategoryJsonParser = new BeerCategoryJsonParser(this);
+        categoryItemLists = beerCategoryJsonParser.getCategoryItemLists();
 
         mList = new ArrayList<>();
 

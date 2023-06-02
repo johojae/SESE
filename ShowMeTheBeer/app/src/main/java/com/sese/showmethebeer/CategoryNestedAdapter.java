@@ -2,7 +2,6 @@ package com.sese.showmethebeer;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +52,16 @@ public class CategoryNestedAdapter extends RecyclerView.Adapter<CategoryNestedAd
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     //Log.d("hojae", "position = " + position + " parent:" +parentCategory + " mText:" + mList.get(position).nestedName);
+
+                    /*
+                    Intent intent = new Intent(v.getContext(), BeerListActivity.class);
+
+                    intent.putExtra("caller", "category");
+                    intent.putExtra("parentCategory", parentCategory);
+                    intent.putExtra("detailCategory", mList.get(position).nestedName);
+                    v.getContext().startActivity(intent);
+
+                     */
 
                     Intent intent = new Intent(v.getContext(), BeerListActivity.class);
 
