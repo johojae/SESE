@@ -51,23 +51,11 @@ public class CategoryNestedAdapter extends RecyclerView.Adapter<CategoryNestedAd
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    //Log.d("hojae", "position = " + position + " parent:" +parentCategory + " mText:" + mList.get(position).nestedName);
-
-                    /*
-                    Intent intent = new Intent(v.getContext(), BeerListActivity.class);
-
-                    intent.putExtra("caller", "category");
-                    intent.putExtra("parentCategory", parentCategory);
-                    intent.putExtra("detailCategory", mList.get(position).nestedName);
-                    v.getContext().startActivity(intent);
-
-                     */
 
                     Intent intent = new Intent(v.getContext(), BeerListActivity.class);
 
                     intent.putExtra("caller", "category");
-                    intent.putExtra("parentCategory", parentCategory);
-                    intent.putExtra("detailCategory", mList.get(position).nestedName);
+                    intent.putExtra("categoryid", mList.get(position).id);
                     v.getContext().startActivity(intent);
                 }
             }));

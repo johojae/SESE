@@ -20,7 +20,7 @@ public class BeerCategoryJsonParser {
         this.context = context;
     }
 
-    public List<CategoryItem> getCategoryItemLists(){
+    public List<CategoryItem> GetCategoryItemLists(){
         String json = "";
 
         categoryItemLists = new ArrayList<>();
@@ -80,4 +80,30 @@ public class BeerCategoryJsonParser {
 
         return categoryItemLists;
     }
+
+    public String GetParentCategoryName(List<CategoryItem> list, String id){
+        for(int i = 0; i<list.size(); i++){
+            for(int j = 0; j<list.get(i).detailCategorys.size(); j++){
+                if(list.get(i).detailCategorys.get(j).id.equals(id)){
+                    return list.get(i).name;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public String GetDetailCategoryName(List<CategoryItem> list, String id){
+        for(int i = 0; i<list.size(); i++){
+            for(int j = 0; j<list.get(i).detailCategorys.size(); j++){
+                if(list.get(i).detailCategorys.get(j).id.equals(id)){
+                    return list.get(i).detailCategorys.get(j).name;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
 }

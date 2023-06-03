@@ -44,8 +44,14 @@ public class BeerListActivity extends FragmentActivity{
         String called_from = intent.getStringExtra("caller");
 
         if(called_from != null && called_from.equalsIgnoreCase("category")) {
-            String parentCategory = intent.getStringExtra("parentCategory");
-            String detailCategory = intent.getStringExtra("detailCategory");
+            String id = intent.getStringExtra("categoryid");
+
+            List<CategoryItem> categoryItemLists = new ArrayList<>();
+            BeerCategoryJsonParser beerCategoryJsonParser = new BeerCategoryJsonParser(this);
+            categoryItemLists = beerCategoryJsonParser.GetCategoryItemLists();
+
+            String parentCategory = beerCategoryJsonParser.GetParentCategoryName(categoryItemLists, id);
+            String detailCategory = beerCategoryJsonParser.GetDetailCategoryName(categoryItemLists, id);
 
             TextView title_view = (TextView) findViewById(R.id.beer_list_title);
 
