@@ -6,65 +6,90 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <TableLayout
-        android:layout_marginTop="100dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:dividerPadding="30dp">
-
         <TableRow
+            android:id="@+id/id_main_row_scan"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="80dp">
             <ImageView
                 android:id="@+id/id_main_menu_scan"
-                android:layout_width="169dp"
-                android:layout_height="172dp"
-                app:srcCompat="@drawable/menu_img_scan"
-                tools:layout_editor_absoluteX="33dp"
-                tools:layout_editor_absoluteY="106dp" />
-
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                app:srcCompat="@drawable/menu_img_scan"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="바코드 스캔"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"/>
+        </TableRow>
+        <TableRow
+            android:id="@+id/id_main_row_recommend"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
             <ImageView
                 android:id="@+id/id_main_menu_recommend"
-                android:layout_width="172dp"
-                android:layout_height="155dp"
-                app:srcCompat="@drawable/menu_img_recommend"
-                tools:layout_editor_absoluteX="217dp"
-                tools:layout_editor_absoluteY="106dp" />
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                app:srcCompat="@drawable/menu_img_recommend"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="추천 맥주 보기"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"/>
         </TableRow>
 
         <TableRow
+            android:id="@+id/id_main_row_category"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="80dp">
             <ImageView
                 android:id="@+id/id_main_menu_category"
-                android:layout_width="235dp"
-                android:layout_height="171dp"
-                app:srcCompat="@drawable/menu_img_category"
-                tools:layout_editor_absoluteX="48dp"
-                tools:layout_editor_absoluteY="330dp" />
-
-            <ImageView
-                android:id="@+id/id_main_menu_store"
-                android:layout_width="159dp"
-                android:layout_height="141dp"
-                app:srcCompat="@drawable/menu_img_store"
-                tools:layout_editor_absoluteX="236dp"
-                tools:layout_editor_absoluteY="302dp" />
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                app:srcCompat="@drawable/menu_img_category" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="맥주 카테고리 보기"
+                android:textStyle="bold"/>
         </TableRow>
 
         <TableRow
+            android:id="@+id/id_main_row_store"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="80dp">
+            <ImageView
+                android:id="@+id/id_main_menu_store"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                app:srcCompat="@drawable/menu_img_store" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="주변 찾기"
+                android:textStyle="bold"/>
+        </TableRow>
+        <TableRow
+            android:id="@+id/id_main_row_my_beer"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
             <ImageView
                 android:id="@+id/id_main_menu_my_beer"
-                android:layout_width="183dp"
-                android:layout_height="154dp"
-                app:srcCompat="@drawable/menu_img_my_beer"
-                tools:layout_editor_absoluteX="226dp"
-                tools:layout_editor_absoluteY="462dp"
-                android:layout_column="1"/>
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                app:srcCompat="@drawable/menu_img_my_beer"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="My Beers!"
+                android:textStyle="bold"/>
         </TableRow>
     </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

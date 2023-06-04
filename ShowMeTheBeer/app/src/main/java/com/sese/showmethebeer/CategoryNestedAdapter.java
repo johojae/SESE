@@ -54,8 +54,8 @@ public class CategoryNestedAdapter extends RecyclerView.Adapter<CategoryNestedAd
 
                     Intent intent = new Intent(v.getContext(), BeerListActivity.class);
 
-                    intent.putExtra("caller", "category");
-                    intent.putExtra("categoryid", mList.get(position).id);
+                    intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_CATEGORY);
+                    intent.putExtra(Constants.INTENT_KEY_CATEGORY_ID, mList.get(position).id);
                     v.getContext().startActivity(intent);
                 }
             }));

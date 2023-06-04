@@ -4,15 +4,9 @@ import android.content.Context;
 
 import com.sese.showmethebeer.App;
 
-import java.io.IOException;
-
+import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ServerManager {
     /*private static OkHttpClient httpClient = new OkHttpClient();
@@ -41,9 +35,9 @@ public class ServerManager {
         ipAddr = "https://192.168.1.176:8443"; //app.getSQLiteManager().getServerIpAddress(); //ex, 192.168.0.10:1234
     }
 
-    public void send(String apiSubUrl, Callback callback) {
+    public Call send(String apiSubUrl, Callback callback) {
         if (ipAddr == null || ipAddr.length() == 0) {
-            return;
+            return null;
         }
         
         try {
@@ -51,22 +45,19 @@ public class ServerManager {
 
             System.out.println("serverUrl :: " + serverUrl);
 
-        /*RequestBody body = new FormBody.Builder()
-                .add("parameter1", "")
-                .add("parameter2", "")
-                .build();*/
             Request request = new Request.Builder()
                     .url(serverUrl)
-                    //.post(body)
                     .build();
 
-            TrustOkHttpClientUtil.getUnsafeOkHttpClient().build().newCall(request).enqueue(callback);
-            //new OkHttpClient().newCall(request).enqueue(callback);
+            Call call = TrustOkHttpClientUtil.getUnsafeOkHttpClient().build().newCall(request);
+            call.enqueue(callback);
 
+            return call;
         } catch (Exception e) {
             System.out.println("serverUrl :: exception");
             e.printStackTrace();
         }
+        return null;
     }
 
     public void updateServerIpAddress(String ipAddress) {

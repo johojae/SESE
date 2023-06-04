@@ -66,7 +66,7 @@ public class BeerCategoryActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.searchbar_menu, menu);
         MenuItem menuItem = menu.findItem((R.id.search));
         SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Search here");
+        searchView.setQueryHint("맥주 이름을 입력하여 검색하세요.");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
             @Override

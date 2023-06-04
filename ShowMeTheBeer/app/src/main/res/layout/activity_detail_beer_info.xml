@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".DetailBeerInfoActivity">
 
+    <include layout="@layout/content_no_network"
+        android:id="@+id/detailInfoNoNetworkLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/detailInfoFullLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
     <RelativeLayout
         android:id="@+id/topLayOut"
         android:layout_width="match_parent"
@@ -37,8 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/topLayOut"
             android:textStyle="bold"
-            android:textSize="33dp" />
-
+            android:textSize="35dp" />
         <ImageView
             android:id="@+id/markingStateView"
             android:layout_width="30dp"
@@ -46,8 +58,17 @@
             android:layout_marginLeft="3dp"
             app:srcCompat="@drawable/book_unmarked" />
     </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/beerNameEngText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="15dp" />
+        </TableRow>
     </TableLayout>
-
 
     <androidx.appcompat.widget.AppCompatRatingBar
         android:id="@+id/ratingBar"
@@ -69,8 +90,8 @@
                 android:layout_height="match_parent">
         <ImageView
             android:id="@+id/informationTextImg"
-            android:layout_width="400px"
-            android:layout_height="200px"
+            android:layout_width="450px"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             app:srcCompat="@drawable/information_text_img" />
 
@@ -92,45 +113,10 @@
 
                 <TextView
                     android:id="@+id/categoryTextView"
+                    android:layout_marginLeft="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/alcoholicityText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="도수 |" />
-
-                <TextView
-                    android:id="@+id/alcoholicityTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/refreshMentText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="청량감 |" />
-                <TextView
-                    android:id="@+id/refreshMentTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
-                <ImageView
-                    android:id="@+id/refreshMentImageView"
-                    android:layout_width="250px"
-                    android:layout_height="70px"/>
+                    android:linksClickable="true" />
             </TableRow>
 
             <TableRow
@@ -145,10 +131,65 @@
                 <TextView
                     android:id="@+id/countryTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:layout_height="wrap_content"/>
             </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/alcoholicityText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="도수 |" />
 
+                <TextView
+                    android:id="@+id/alcoholicityTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/refreshMentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="청량감 |" />
+                <TextView
+                    android:id="@+id/refreshMentTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/refreshMentImageView"
+                    android:layout_width="250px"
+                    android:layout_height="70px"/>
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/ibuText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="IBU |" />
+                <TextView
+                    android:id="@+id/ibuTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/ibuDescriptionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <!--
+                    android:text="(IBU는 맥주의 쓴 맛을 나타냅니다. 숫자가 커질 수록 쓴 맛이 강합니다.)"-->
+                <ImageView
+                    android:id="@+id/ibuDescriptionImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </TableRow>
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -162,8 +203,7 @@
                 <TextView
                     android:id="@+id/manufactureTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:layout_height="wrap_content"/>
             </TableRow>
         </TableLayout>
 
@@ -172,11 +212,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tableLayout"
-            android:text="TextView"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:paddingTop="20dp"/>
+
+        <TextView
+            android:id="@+id/smilarBeerText"
+            android:layout_below="@id/beerDescriptionTextView"
+            android:layout_width="450px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:textStyle="bold"
+            android:text="이 맥주는 어때요?"/>
+
+        <TableLayout
+            android:id="@+id/similarBeerTableLayout"
+            android:layout_width= "wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@id/smilarBeerText">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/smilarBeerImageView_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/smilarBeerImageView_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/smilarBeerImageView_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </TableRow>
+        </TableLayout>
+
         </RelativeLayout>
+
+
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -189,4 +266,5 @@
         android:layout_marginEnd="16dp"
         android:layout_gravity="bottom|end"
         app:srcCompat="@drawable/barcode_product_fab_icon" />
+    </RelativeLayout>
 </RelativeLayout>

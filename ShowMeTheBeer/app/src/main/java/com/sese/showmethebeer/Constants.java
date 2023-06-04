@@ -3,8 +3,18 @@ package com.sese.showmethebeer;
 public class Constants {
 
     //intent에 사용하는 상수 데이터 등 정의
-    public static final String KEY_BARCODE = "key_barcode";
+    public static final String INTENT_KEY_BARCODE = "key_barcode";
+    public static final String INTENT_KEY_BEERID = "key_beerId";
+    public static final String INTENT_KEY_CATEGORY = "category";
+    public static final String INTENT_KEY_FROM = "from";
 
+    public static final String INTENT_KEY_CALLER = "caller";
+    public static final String INTENT_KEY_CATEGORY_ID = "categoryid";
+    public static final String INTENT_VAL_CATEGORY = "category";
+
+    public static final String INTENT_KEY_TEST_MODE = "testmode";
+
+    public static final String ACTIVITY_NAME_MAIN = "MainActivity";
 
     //REST API의 response에 사용되는 KEY
     /*"count": 1,
@@ -22,10 +32,18 @@ public class Constants {
     public static final String KEY_SERVER_LIST = "list";
     public static final String KEY_SERVER_ID = "id";
     public static final String KEY_SERVER_BEER_NAME = "name";
+    public static final String KEY_SERVER_BEER_ENG_NAME = "englishName";
     public static final String KEY_SERVER_MANUFACTURER= "manufacturer";
     public static final String KEY_SERVER_ICON = "iconUrl";
     public static final String KEY_SERVER_ALCHOLOICITY = "alcoholVolume";
     public static final String KEY_SERVER_CATEGORY_ID = "categoryId";
+
+    public static final String KEY_CARBONIC_ACID = "carbonicAcid";
+
+    public static final String KEY_SERVER_IBU = "ibu";
+
+    public static final String KEY_SERVER_RELATIVE_BEERS = "relatedBeers";
+
     public static final String KEY_SERVER_DESC = "description";
 
     public static final String KEY_SERVER_COUNTRY = "country";

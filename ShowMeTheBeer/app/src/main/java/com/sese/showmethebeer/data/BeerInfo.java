@@ -8,7 +8,8 @@ import org.json.JSONObject;
 public class BeerInfo {
     protected String beerId;
     protected String name;
-    protected String category; //안쓸듯
+    protected String engName;
+
     protected String categoryId;
     protected String thumbnail;
     protected String country;
@@ -31,6 +32,11 @@ public class BeerInfo {
 
         try {
             name = jsonObj.getString(Constants.KEY_SERVER_BEER_NAME);
+        } catch (Exception e) {
+        }
+
+        try {
+            engName = jsonObj.getString(Constants.KEY_SERVER_BEER_ENG_NAME);
         } catch (Exception e) {
         }
 
@@ -62,9 +68,13 @@ public class BeerInfo {
         return name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getEngName() {
+        return engName;
     }
+
+    /*public String getCategory() {
+        return category;
+    }*/
 
     public String getCategoryId() {
         return categoryId;

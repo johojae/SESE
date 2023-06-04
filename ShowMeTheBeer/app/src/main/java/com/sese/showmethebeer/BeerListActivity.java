@@ -41,10 +41,10 @@ public class BeerListActivity extends FragmentActivity{
 
         Intent intent = getIntent();
 
-        String called_from = intent.getStringExtra("caller");
+        String called_from = intent.getStringExtra(Constants.INTENT_KEY_CALLER);
 
-        if(called_from != null && called_from.equalsIgnoreCase("category")) {
-            String id = intent.getStringExtra("categoryid");
+        if(called_from != null && called_from.equalsIgnoreCase(Constants.INTENT_VAL_CATEGORY)) {
+            String id = intent.getStringExtra(Constants.INTENT_KEY_CATEGORY_ID);
 
             List<CategoryItem> categoryItemLists = new ArrayList<>();
             BeerCategoryJsonParser beerCategoryJsonParser = new BeerCategoryJsonParser(this);

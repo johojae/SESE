@@ -5,24 +5,29 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.URLSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sese.showmethebeer.data.DetailBeerInfo;
 import com.sese.showmethebeer.manager.DetailBeerInfoHelper;
+import com.sese.showmethebeer.manager.ImageLoadTask;
+import com.sese.showmethebeer.manager.ImageLoadTaskManager;
+import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 import com.sese.showmethebeer.serverConn.ServerManager;
 import com.sese.showmethebeer.sqlite.SQLiteManager;
 
@@ -30,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,16 +46,18 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
     private SQLiteManager sqLiteManager;
 
-    //private ActivityMainBinding binding;
-    String beerId = "test";
     DetailBeerInfo objDetailBeerInfo;
 
     //flag data
     boolean markingState_marked = false;
 
+    View detailInfoNoNetworkLayout = null;
+    RelativeLayout detailInfoFullLayout = null;
+
     //view
     ImageView beerImageView = null;
     TextView beerNameText = null;
+    TextView beerNameEngText = null;
     RatingBar ratingBar = null;
     ImageView bookMark = null;
 
@@ -58,20 +67,34 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
     TextView countryTextView = null;
 
+    TextView refreshMentText = null;
     TextView refreshMentTextView = null;
     ImageView refreshMentImageView = null;
+
+    TextView ibuText = null;
+    TextView ibuTextView = null;
+    TextView ibuDescriptionText = null;
+    ImageView ibuDescriptionImageView = null;
 
     TextView manufactureTextView = null;
     TextView beerDescriptionTextView = null;
 
+    Call beerInfoCall = null;
+
+    ArrayList<DetailBeerInfo> objSmiliarBeerInfos = null;
 
     FloatingActionButton scanFloatingBt = null;
     Toast toast = null;
     Context context = null;
 
+    private static final int MESSAGE_ID_DIALOG_START = -1;
     private static final int MESSAGE_ID_UPDATE_DETAIL_BEER_INFO = 0;
+    private static final int MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER = 1;
+    private static final int MESSAGE_ID_DIALOG_ERROR_OTHERS = 2;
 
-    final Handler handler = new Handler(){
+    private static final int MESSAGE_ID_DIALOG_END = 3;
+
+    final Handler handler = new Handler() {
         @SuppressLint("HandlerLeak")
         public void handleMessage(Message msg){
             int messageId = msg.what;
@@ -79,6 +102,10 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             switch (messageId) {
                 case MESSAGE_ID_UPDATE_DETAIL_BEER_INFO:
                     showDetailBeerInfo();
+                    break;
+                case MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER:
+                case MESSAGE_ID_DIALOG_ERROR_OTHERS:
+                    showErrorDialog(messageId);
                     break;
             }
         }
@@ -94,30 +121,52 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         sqLiteManager = app.getSQLiteManager();
 
         Intent intent = getIntent();
-        String barcode = "8801021213217"; //intent.getStringExtra(Constants.KEY_BARCODE); //8712000010249
 
-        //sendData(barcode);
+        //TODO , barcode에서 오는 것이랑 beerId로 오는 것이랑 따로 챙길 것. 그리고 호출한 activity이름 넘겨줄것
+        String barcode = intent.getStringExtra(Constants.INTENT_KEY_BARCODE);
+        String beerId = intent.getStringExtra(Constants.INTENT_KEY_BEERID);
+        String from = intent.getStringExtra(Constants.INTENT_KEY_FROM);
 
+        System.out.println("DetailBeerInfoActivity barcode = " + ", beerId = " + beerId + " , from = " + from);
 
-        Toast.makeText(this, "barcode :: " + barcode, 60*60).show();
+        detailInfoNoNetworkLayout = findViewById(R.id.detailInfoNoNetworkLayout);
+        detailInfoFullLayout = findViewById(R.id.detailInfoFullLayout);
 
         beerImageView = findViewById(R.id.beerImageView);
         beerNameText = findViewById(R.id.beerNameText);
+        beerNameEngText = findViewById(R.id.beerNameEngText);
         ratingBar = findViewById(R.id.ratingBar);
         bookMark = findViewById(R.id.markingStateView);
         categoryTextView = findViewById(R.id.categoryTextView);
+
         alcoholicityTextView = findViewById(R.id.alcoholicityTextView);
         countryTextView = findViewById(R.id.countryTextView);
         manufactureTextView = findViewById(R.id.manufactureTextView);
+
+        refreshMentText = findViewById(R.id.refreshMentText);
         refreshMentTextView = findViewById(R.id.refreshMentTextView);
         refreshMentImageView = findViewById(R.id.refreshMentImageView);
+
+        ibuText = findViewById(R.id.ibuText);
+        ibuTextView = findViewById(R.id.ibuTextView);
+        ibuDescriptionText = findViewById(R.id.ibuDescriptionText);
+        ibuDescriptionImageView = findViewById(R.id.ibuDescriptionImageView);
 
         beerDescriptionTextView = findViewById(R.id.beerDescriptionTextView);
         scanFloatingBt = findViewById(R.id.scanFloatingBt);
 
-        JSONObject testJson = new DetailBeerInfo().getTestData();
-        objDetailBeerInfo = new DetailBeerInfo(testJson);
-
+        if (intent.getBooleanExtra(Constants.INTENT_KEY_TEST_MODE, false)) {
+            JSONObject testJson = new DetailBeerInfo().getTestData();
+            objDetailBeerInfo = new DetailBeerInfo(testJson);
+        } else {
+            if (barcode != null && !barcode.isEmpty()) { //barcode로 요청하는 경우
+                requestDataByBarCode(barcode);
+                Toast.makeText(this, "barcode :: " + barcode, 60*60).show();
+            } else if (beerId != null && !beerId.isEmpty()){
+                requestDataByBeerId(beerId);
+                Toast.makeText(this, "beerId :: " + barcode, 60*60).show();
+            }
+        }
 
         handleBookMarkView();
         scanFloatingBt.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +176,6 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
@@ -146,10 +194,52 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         
         //Server에서 DetailBeerInfo를 get해 온 후 , 맞게 UPDATE함.
         showDetailBeerInfo();
+    }
 
+    public void onDestroy() {
+        super.onDestroy();
+        for (int i = MESSAGE_ID_DIALOG_START + 1 ; i < MESSAGE_ID_DIALOG_END; i++) {
+            handler.removeMessages(i);
+        }
+        beerInfoCall.cancel();
+    }
+
+    private String getCategoryText(String categoryId) {
+        try {
+            BeerCategoryJsonParser beerCategoryJsonParser = new BeerCategoryJsonParser(this);
+            List<CategoryItem> categoryItemLists = beerCategoryJsonParser.GetCategoryItemLists();;
+
+            String parentCategory = beerCategoryJsonParser.GetParentCategoryName(categoryItemLists, categoryId);
+            String detailCategory = beerCategoryJsonParser.GetDetailCategoryName(categoryItemLists, categoryId);
+
+            if (parentCategory != null && detailCategory != null) {
+                return parentCategory + " > " + detailCategory;
+            } else {
+                if (parentCategory == null) {
+                    return detailCategory;
+                } else {
+                    return parentCategory;
+                }
+            }
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private void showDetailBeerInfo() {
+
+        boolean networkConnected = NetworkConnectionUtil.isNetworkAvailable(context);
+
+        System.out.println("isNetworkAvailable::" + networkConnected);
+
+        detailInfoNoNetworkLayout.setVisibility(networkConnected? View.GONE : View.VISIBLE);
+        System.out.println("detailInfoNoNetworkLayout::" + detailInfoNoNetworkLayout.getVisibility());
+        detailInfoFullLayout.setVisibility(networkConnected? View.VISIBLE : View.GONE);
+
+        if (!networkConnected) {
+            return;
+        }
+
         if (objDetailBeerInfo != null) {
             String thumbnailUrl = objDetailBeerInfo.getThumbnail();
 
@@ -158,20 +248,72 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 task.execute();
             }
             beerNameText.setText(objDetailBeerInfo.getName());
-            categoryTextView.setText(objDetailBeerInfo.getCategory());
+
+            String engName = objDetailBeerInfo.getEngName();
+            if (engName != null && !engName.isEmpty()) {
+                beerNameEngText.setVisibility(View.VISIBLE);
+                beerNameEngText.setText(engName);
+            } else {
+                beerNameEngText.setVisibility(View.GONE);
+            }
+
+
+            SpannableStringBuilder ssb = new SpannableStringBuilder();
+            SpannableStringBuilder append = ssb.append(getCategoryText(objDetailBeerInfo.getCategoryId()));
+            ssb.setSpan(new URLSpan("#"), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            categoryTextView.setText(ssb, TextView.BufferType.SPANNABLE);
+
+            //categoryTextView.setText(getCategoryText(objDetailBeerInfo.getCategoryId()));
+
+            categoryTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //beerList activity 띄우기 TODO
+                    Intent intent = new Intent(getApplicationContext(), BeerListActivity.class);
+                    intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_CATEGORY);
+                    intent.putExtra(Constants.INTENT_KEY_CATEGORY, objDetailBeerInfo.getCategoryId());
+                    startActivity(intent);
+                }
+            });
             alcoholicityTextView.setText(objDetailBeerInfo.getAlcoholicity());
             countryTextView.setText(objDetailBeerInfo.getCountry());
             manufactureTextView.setText(objDetailBeerInfo.getManufacturer());
             beerDescriptionTextView.setText(objDetailBeerInfo.getDescription());
 
-            showRefrementInfo(objDetailBeerInfo.getRefreshmentLevel());
+            String ibu = objDetailBeerInfo.getIbu();
+            if (ibu != null && !ibu.isEmpty()) {
+                ibuText.setVisibility(View.VISIBLE);
+                ibuTextView.setVisibility(View.VISIBLE);
+                ibuDescriptionText.setVisibility(View.VISIBLE);
+                ibuDescriptionImageView.setVisibility(View.VISIBLE);
+                ibuTextView.setText(ibu);
+            } else {
+                ibuText.setVisibility(View.GONE);
+                ibuTextView.setVisibility(View.GONE);
+                ibuDescriptionText.setVisibility(View.GONE);
+                ibuDescriptionImageView.setVisibility(View.GONE);
+            }
+
+            ibuDescriptionImageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return false;
+                }
+            });
+
+            showCarbonicAcideInfo(objDetailBeerInfo.getCarbonicAcidLevel());
         }
     }
 
-    private void showRefrementInfo(int refreshMentLevel) {
+    private void showCarbonicAcideInfo(int carbonicAcidLevel) {
+        int visible = (carbonicAcidLevel >= 1)? View.VISIBLE : View.GONE;
+        refreshMentText.setVisibility(visible);
+        refreshMentTextView.setVisibility(visible);
+        refreshMentImageView.setVisibility(visible);
+
         int drawableId = 1;
         int levelTextId = 1;
-        switch (refreshMentLevel) {
+        switch (carbonicAcidLevel) {
             case 1:
                 drawableId = R.drawable.freshness1;
                 levelTextId = R.string.refreshness1_info;
@@ -271,13 +413,23 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         toast.show();
     }
 
-    /** 웹 서버로 데이터 전송 */
-    private void sendData(String barcode) {
+    /** 웹 서버로 데이터 요청 전송 */
+    private void requestDataByBarCode(String barcode) {
         new Thread() {
             public void run() {
                 //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
-                ((App)getApplication()).getServerMngr()
+                beerInfoCall = ((App)getApplication()).getServerMngr()
                         .send(ServerManager.SUB_API_INFO_BY_BARCODE + barcode, getCallback());
+            }
+        }.start();
+    }
+
+    private void requestDataByBeerId(String beerId) {
+        new Thread() {
+            public void run() {
+                //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
+                beerInfoCall = ((App)getApplication()).getServerMngr()
+                        .send(ServerManager.SUB_API_INFO_BY_BEER_ID + beerId, getCallback());
             }
         }.start();
     }
@@ -290,17 +442,25 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     // Get response
                     String jsonData = response.body().string();
-                    System.out.println("serverUrl::" + jsonData);
+                    System.out.println("DetailBeerInfoActivity::" + jsonData);
                     try {
                         objDetailBeerInfo
                                 = new DetailBeerInfoHelper()
                                 .getDetailBeerInfo(new JSONObject(jsonData));
-                        handler.sendEmptyMessage(MESSAGE_ID_UPDATE_DETAIL_BEER_INFO);
+
+                        if (objDetailBeerInfo != null) {
+                            handler.sendEmptyMessage(MESSAGE_ID_UPDATE_DETAIL_BEER_INFO);
+                        } else {
+                            handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
+                        }
+
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                } else if (response.code() == 404) {
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER);
                 } else {
-
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                 }
 
             }
@@ -308,7 +468,51 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 System.out.println("DetailBeerInfoActivity::onFailure:" + e.getLocalizedMessage());
+
+                if (call.isCanceled()) {
+                    //ignore
+                } else {
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS); //알 수 없는 에러가 발생한 경우
+                }
             }
         };
+    }
+
+    private void showErrorDialog(int messageIdErrDialog) { //에러 발생
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.dialog_error_title);
+
+        if (messageIdErrDialog == MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER) {
+            builder.setMessage(R.string.dialog_error_beer_not_found);
+
+            builder.setPositiveButton(R.string.text_yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) { //TODO :: category activity에서 검색 메뉴로 jump
+                    Intent intent = new Intent(getApplicationContext(), BeerCategoryActivity.class);
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton(R.string.text_no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish(); //activity 종료시킴
+                }
+            });
+
+        }
+        else {
+            builder.setMessage(R.string.dialog_error_server_error);
+
+            builder.setPositiveButton(R.string.text_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish(); //activity 종료시킴
+                }
+            });
+        }
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

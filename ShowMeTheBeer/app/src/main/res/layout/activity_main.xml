@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/mainAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.ShowMeTheBeer.AppBarOverlay">
@@ -22,27 +23,41 @@
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        app:srcCompat="@drawable/menu_text_icon"
+        />
+
     <include layout="@layout/content_main"
             android:layout_marginTop="100dp"
+            android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    <Button
-        android:id="@+id/hiddenMenuButton"
-        android:text= "Temp_hiddenMenu"
+    <ImageView
+        android:layout_marginTop="440dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/whats_new_icon"
+        />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-    />
+        android:layout_marginTop="480dp"
+        android:paddingLeft="20dp"
+        android:text="새로 나온 맥주를 만나보세요!"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+    <ImageView
+        android:id="@+id/newBeerImageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:layout_height="100dp"
+        android:layout_marginTop="520dp"
+        android:layout_gravity="left"
+        app:srcCompat="@drawable/new_beer_kelly" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab2"

@@ -32,11 +32,13 @@ public class DetailBeerInfoHelper {
     }
          */
         try {
-            //JSONArray list = respObj.getJSONArray(Constants.KEY_SERVER_LIST);
-            //if (list != null && list.length() > 0) {
+            JSONArray list = respObj.getJSONArray(Constants.KEY_SERVER_LIST);
+            if (list != null && list.length() > 0) {
                 DetailBeerInfo detailBeerInfo = new DetailBeerInfo(respObj);
                 return detailBeerInfo;
-            //}
+            } else {
+                return null;
+            }
 
         } catch (Exception e) {
             return null;
