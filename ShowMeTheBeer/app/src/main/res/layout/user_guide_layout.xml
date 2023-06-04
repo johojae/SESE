@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/no_internet_imgView"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            app:srcCompat="@drawable/no_internet"
+            android:gravity="center_vertical|center_horizontal"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="30dp"
+            android:layout_below="@id/no_internet_imgView"
+            android:text="TEMP User guide layout!!"
+            android:textStyle="bold"/>
+
+
+        <ImageView
+            android:id="@+id/userGuideSkipImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="133dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center_vertical|center_horizontal"
+            app:srcCompat="@drawable/skip_icon" />
+
+        <ImageView
+            android:id="@+id/userGuideNextImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center_vertical|center_horizontal"
+            app:srcCompat="@drawable/next_icon" />
+</RelativeLayout>

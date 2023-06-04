@@ -1,4 +1,4 @@
-package com.sese.showmethebeer;
+package com.sese.showmethebeer.manager;
 
 import android.graphics.Bitmap;
 import android.widget.ImageView;

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShowMeTheBeer</string>
+    <string name="app_name">Show Me The Beer</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -18,8 +18,12 @@
 
     <string name="dialog_error_title">에러</string>
     <string name="dialog_error_try_again">다시 시도하시겠습니까?</string>
+    <string name="dialog_error_camera_permission">카메라 권한을 확인해주세요.</string>
+    <string name="dialog_error_beer_not_found">맥주를 찾지 못했습니다. 검색 메뉴에서 직접 검색하여 찾아 보시겠습니까?</string>
+    <string name="dialog_error_server_error">알 수 없는 에러가 발생 했습니다. 다시 시도해주세요.</string>
     <string name="text_yes">네</string>
     <string name="text_no">아니오</string>
+    <string name="text_confirm">확인</string>
     <string name="dialog_info_title">안내</string>
     <string name="dialog_delete_confirm">My Beer에서 삭제하시겠습니까? 평가 정보도 함께 삭제됩니다.</string>
     <string name="text_save_beer">My Beer에 저장했습니다</string>

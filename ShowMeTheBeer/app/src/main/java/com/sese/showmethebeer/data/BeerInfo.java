@@ -8,10 +8,13 @@ import org.json.JSONObject;
 public class BeerInfo {
     protected String beerId;
     protected String name;
-    protected String category; //안쓸듯
+    protected String engName;
+
     protected String categoryId;
     protected String thumbnail;
     protected String country;
+
+    protected boolean isNew = false;
 
     public BeerInfo(JSONObject jsonObj) {
         // {
@@ -35,6 +38,11 @@ public class BeerInfo {
         }
 
         try {
+            engName = jsonObj.getString(Constants.KEY_SERVER_BEER_ENG_NAME);
+        } catch (Exception e) {
+        }
+
+        try {
             categoryId = jsonObj.getString(Constants.KEY_SERVER_CATEGORY_ID);
         } catch (Exception e) {
         }
@@ -46,6 +54,13 @@ public class BeerInfo {
 
         try {
             country = jsonObj.getString(Constants.KEY_SERVER_COUNTRY);
+        } catch (Exception e) {
+        }
+
+        try {
+            if (jsonObj.has(Constants.KEY_SERVER_NEW)) {
+                isNew = jsonObj.getBoolean(Constants.KEY_SERVER_NEW);
+            }
         } catch (Exception e) {
         }
     }
@@ -62,9 +77,13 @@ public class BeerInfo {
         return name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getEngName() {
+        return engName;
     }
+
+    /*public String getCategory() {
+        return category;
+    }*/
 
     public String getCategoryId() {
         return categoryId;
@@ -78,5 +97,6 @@ public class BeerInfo {
         return country;
     }
 
+    public boolean isNew() { return isNew; }
 
 }
