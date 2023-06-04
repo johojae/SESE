@@ -2,7 +2,6 @@ package com.sese.showmethebeer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
@@ -19,117 +18,18 @@ import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapReverseGeoCoder;
-import net.daum.mf.map.api.MapView;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
-import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapView;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
-import kong.unirest.Unirest;
-
-import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 public class BeerStoreManagerActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener {
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
@@ -178,14 +78,10 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
             e.printStackTrace();
         }
 
-        //(mapView, currentMapPoint.getMapPointGeoCoord().longitude, currentMapPoint.getMapPointGeoCoord().latitude);
         for (BeerStoreManager.StoreData storeData:storeDataList) {
             Log.d(TAG, "storeData => " + storeData.logString());
             MapMarker(mapView, storeData.place_name, Integer.toString(storeData.distance), storeData.lng, storeData.lat);
         }
-
-        //mapView.setCurrentLocationEventListener(this);
-        //mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
     }
 
     // 현재 위치 업데이트 setCurrentLocationEventListener
@@ -205,8 +101,6 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         double mCurrentLat = mapPointGeo.latitude;
         double mCurrentLng = mapPointGeo.longitude;
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
-        //mLoaderLayout.setVisibility(View.GONE);
-        //mapView.setVisibility(View.GONE);
 
         MapPoint.GeoCoordinate centerPt = mapView.getMapCenterPoint().getMapPointGeoCoord();
         mCurrentLat = centerPt.latitude;
