@@ -24,9 +24,12 @@ public class BeerListGridFragment extends Fragment {
     DetailBeerInfo[] beers = {};
     private Activity activity;
 
-    public BeerListGridFragment(DetailBeerInfo[] beers, Activity activity){
+    private boolean isCategory;
+
+    public BeerListGridFragment(DetailBeerInfo[] beers, Activity activity, boolean isCategory){
         this.beers = beers;
         this.activity = activity;
+        this.isCategory = isCategory;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class BeerListGridFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if(activity != null){
-            mGridAdapter = new BeerListAdapter(activity, beers);
+            mGridAdapter = new BeerListAdapter(activity, beers, isCategory);
 
             if(mGridView != null){
                 mGridView.setAdapter(mGridAdapter);

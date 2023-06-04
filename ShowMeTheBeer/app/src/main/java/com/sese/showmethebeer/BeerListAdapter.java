@@ -1,7 +1,6 @@
 package com.sese.showmethebeer;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sese.showmethebeer.data.DetailBeerInfo;
+import com.sese.showmethebeer.manager.ImageLoadTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BeerListAdapter extends BaseAdapter {
 
@@ -17,16 +20,26 @@ public class BeerListAdapter extends BaseAdapter {
 
     public class ViewHolder{
         public ImageView imageView;
-        public TextView textTitle;
+
+        public TextView textCategoryTag;
+        public TextView textCategory;
+
+        public TextView textCountry;
+        public TextView textName;
+
+        public TextView textAlcoholicity;
     }
 
     private DetailBeerInfo[] items;
     private LayoutInflater mInflater;
 
-    public BeerListAdapter(Context context, DetailBeerInfo[] locations){
+    private boolean isCategory;
+
+    public BeerListAdapter(Context context, DetailBeerInfo[] locations, boolean isCategory){
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
         items = locations;
+        this.isCategory = isCategory;
     }
 
     public DetailBeerInfo[] getItems(){
@@ -70,19 +83,40 @@ public class BeerListAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.grid_view_beer_item_list, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.imageView = (ImageView) view.findViewById(R.id.icon_id);
-            viewHolder.textTitle = (TextView) view.findViewById((R.id.textview));
+            viewHolder.textCategoryTag = (TextView) view.findViewById(R.id.grid_beer_category_tag);
+            viewHolder.textCategory = (TextView) view.findViewById(R.id.grid_beer_category);
+            viewHolder.textCountry = (TextView) view.findViewById(R.id.grid_beer_country);
+            viewHolder.textAlcoholicity = (TextView) view.findViewById(R.id.grid_beer_alcoholicity);
+            viewHolder.textName = (TextView) view.findViewById(R.id.grid_beer_name);
+
+            if(isCategory == true)
+            {
+                viewHolder.textCategoryTag.setVisibility(View.INVISIBLE);
+                viewHolder.textCategoryTag.setVisibility(View.GONE);
+                viewHolder.textCategory.setVisibility(View.INVISIBLE);
+                viewHolder.textCategory.setVisibility(View.GONE);
+            }
+
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
 
         DetailBeerInfo beer = items[position];
-        SetCatImage(position, viewHolder, beer.getName(), beer.getThumbnail());
+
+        List<CategoryItem> categoryItemLists = new ArrayList<>();
+        BeerCategoryJsonParser beerCategoryJsonParser = new BeerCategoryJsonParser(view.getContext());
+        categoryItemLists = beerCategoryJsonParser.GetCategoryItemLists();
+
+        String parentCategory = beerCategoryJsonParser.GetParentCategoryName(categoryItemLists, beer.getCategoryId());
+        String detailCategory = beerCategoryJsonParser.GetDetailCategoryName(categoryItemLists, beer.getCategoryId());
+
+        SetCatImage(position, viewHolder, parentCategory, detailCategory, beer.getCountry(), beer.getAlcoholicity(), beer.getName(), beer.getThumbnail());
 
         return view;
     }
 
-    private void SetCatImage(int position, ViewHolder viewHolder, String title, String url){
+    private void SetCatImage(int position, ViewHolder viewHolder, String parentCategory, String detailCategory, String country, String alcoholicity, String name, String url){
         if (url != null && url.length() > 0) {
             ImageLoadTask task = new ImageLoadTask(url, viewHolder.imageView);
             task.execute();
@@ -90,7 +124,10 @@ public class BeerListAdapter extends BaseAdapter {
         else {
             viewHolder.imageView.setImageResource(R.drawable.beer);
         }
-        viewHolder.textTitle.setText(title);
+        viewHolder.textCategory.setText(parentCategory +" > " + detailCategory);
+        viewHolder.textCountry.setText(country);
+        viewHolder.textAlcoholicity.setText(alcoholicity);
+        viewHolder.textName.setText(name);
     }
 
     @Override

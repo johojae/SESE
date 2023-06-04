@@ -66,12 +66,11 @@ public class BeerCategoryActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.searchbar_menu, menu);
         MenuItem menuItem = menu.findItem((R.id.search));
         SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("¸ÆÁÖ ÀÌ¸§À» ÀÔ·ÂÇÏ¿© °Ë»öÇÏ¼¼¿ä.");
+        searchView.setQueryHint("ë§¥ì£¼ ì´ë¦„ì„ ì…ë ¥í•˜ì—¬ ê²€ìƒ‰í•˜ì„¸ìš”.");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
             @Override
             public boolean onQueryTextSubmit(String query){
-                Log.v("hojae", query);
                 return false;
             }
 

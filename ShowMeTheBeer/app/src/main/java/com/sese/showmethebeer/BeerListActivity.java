@@ -48,20 +48,15 @@ public class BeerListActivity extends FragmentActivity{
 
     Context context;
 
-    ArrayList<BeerListCategory> beerBeerListCategory;
-
     List<DetailBeerInfo> beerList;
 
     ArrayList<DetailBeerInfo> a;
-    BeerListCategory m;
-
-    String beerNames[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
-    "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33",
-    "34", "35", "36", "37"};
 
     private static final int MESSAGE_ID_CATEGORY_BEER_INFO = 0;
 
-    private static final int MESSAGE_ID_RECOMMEND_BEER_INFO = 1;
+    private static final int MESSAGE_ID_RECOMMEND_NEW_BEER_INFO = 1;
+
+    private static final int MESSAGE_ID_RECOMMEND_RATE_BEER_INFO = 2;
 
     final Handler handler = new Handler(){
         @SuppressLint("HandlerLeak")
@@ -101,7 +96,7 @@ public class BeerListActivity extends FragmentActivity{
 
                         DetailBeerInfo[] bp = {};
                         DetailBeerInfo[] beerPage = tempBeerList.toArray(bp);
-                        gridFragments.add(new BeerListGridFragment(beerPage, BeerListActivity.this));
+                        gridFragments.add(new BeerListGridFragment(beerPage, BeerListActivity.this, true));
                     }
 
                     pm = new PagerAdapter(BeerListActivity.this, gridFragments);
@@ -110,7 +105,10 @@ public class BeerListActivity extends FragmentActivity{
                     mIndicator.setViewPager(pager);
 
                     break;
-                case MESSAGE_ID_RECOMMEND_BEER_INFO:
+                case MESSAGE_ID_RECOMMEND_NEW_BEER_INFO:
+                    sendData("rate", null);
+                    break;
+                case MESSAGE_ID_RECOMMEND_RATE_BEER_INFO:
                     break;
             }
         }
@@ -118,7 +116,7 @@ public class BeerListActivity extends FragmentActivity{
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beer_list2);
+        setContentView(R.layout.activity_beer_list);
 
         context = this;
         App app = (App)getApplication();
@@ -126,10 +124,8 @@ public class BeerListActivity extends FragmentActivity{
 
         Intent intent = getIntent();
 
+        beerList = new ArrayList<>();
         a = new ArrayList<DetailBeerInfo>();
-
-
-        m = new BeerListCategory();
 
         String called_from = intent.getStringExtra(Constants.INTENT_KEY_CALLER);
 
@@ -149,6 +145,15 @@ public class BeerListActivity extends FragmentActivity{
             title_view.setText(title);
 
             sendData("category", id);
+        }
+        else if(called_from != null && called_from.equalsIgnoreCase(Constants.INTENT_VAL_CATEGORY)){
+            List<CategoryItem> categoryItemLists = new ArrayList<>();
+
+            TextView title_view = (TextView) findViewById(R.id.beer_list_title);
+
+            title_view.setText("추천 맥주");
+
+            sendData("new", null);
         }
 
         pager = (ViewPager2) findViewById(R.id.pager);
@@ -205,7 +210,6 @@ public class BeerListActivity extends FragmentActivity{
         if(method.equals("category")) {
             new Thread() {
                 public void run() {
-                    Log.v("hojae", "thread");
                     //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
                     App app = (App)getApplication();
                     ServerManager manager = app.getServerMngr();
@@ -213,6 +217,29 @@ public class BeerListActivity extends FragmentActivity{
                 }
             }.start();
         }
+
+        if(method.equals(("new"))) {
+            new Thread() {
+                public void run() {
+                    //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
+                    App app = (App)getApplication();
+                    ServerManager manager = app.getServerMngr();
+                    manager.send(ServerManager.SUB_API_INFO_BY_RECOMMEND_NEW_BEER_LIST, getRecommendNewListCallback());
+                }
+            }.start();
+        }
+
+        if(method.equals(("rate"))) {
+            new Thread() {
+                public void run() {
+                    //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
+                    App app = (App)getApplication();
+                    ServerManager manager = app.getServerMngr();
+                    manager.send(ServerManager.SUB_API_INFO_BY_RECOMMEND_RATE_BEER_LIST, getRecommendRateListCallback());
+                }
+            }.start();
+        }
+
     }
 
     private Callback getCategoryListCallback() {
@@ -220,14 +247,73 @@ public class BeerListActivity extends FragmentActivity{
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 System.out.println("BeerListActivity::onResponse:" + response);
-                Log.v("hojae", "response");
                 if (response.code() == 200) {
                     // Get response
                     String jsonData = response.body().string();
                     System.out.println("serverUrl::" + jsonData);
                     try {
                         BeerListParser beerListParser = new BeerListParser();
-                        beerList = beerListParser.getItemList(new JSONArray((jsonData)));
+                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
+
+                        handler.sendEmptyMessage(MESSAGE_ID_CATEGORY_BEER_INFO);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+            }
+        };
+    }
+
+    private Callback getRecommendNewListCallback() {
+        return new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println("BeerListActivity::onResponse:" + response);
+                if (response.code() == 200) {
+                    // Get response
+                    String jsonData = response.body().string();
+                    System.out.println("serverUrl::" + jsonData);
+                    try {
+                        BeerListParser beerListParser = new BeerListParser();
+                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
+
+                        handler.sendEmptyMessage(MESSAGE_ID_CATEGORY_BEER_INFO);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+            }
+        };
+    }
+
+    private Callback getRecommendRateListCallback() {
+        return new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println("BeerListActivity::onResponse:" + response);
+                if (response.code() == 200) {
+                    // Get response
+                    String jsonData = response.body().string();
+                    System.out.println("serverUrl::" + jsonData);
+                    try {
+                        BeerListParser beerListParser = new BeerListParser();
+                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
 
                         handler.sendEmptyMessage(MESSAGE_ID_CATEGORY_BEER_INFO);
                     } catch (JSONException e) {

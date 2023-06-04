@@ -11,13 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BeerListParser {
-    List<DetailBeerInfo> beerList;
-
     BeerListParser(){}
 
-    List<DetailBeerInfo> getItemList(JSONArray jsonArray){
-        beerList = new ArrayList<>();
-
+    void getItemList(List<DetailBeerInfo> beerList, JSONArray jsonArray){
         try {
             JSONObject object = jsonArray.getJSONObject(0);
             JSONArray listArray = object.getJSONArray("list");
@@ -26,13 +22,11 @@ public class BeerListParser {
             for(int i=0; i<listArray.length(); i++){
                 JSONObject listObject = listArray.getJSONObject(i);
 
-                DetailBeerInfo objDetailBeerInfo = new DetailBeerInfoHelper().getDetailBeerInfo(listObject);
-                beerList.add(objDetailBeerInfo);
+                DetailBeerInfo detailBeerInfo = new DetailBeerInfo(listObject);
+                beerList.add(detailBeerInfo);
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-        return beerList;
     }
 }

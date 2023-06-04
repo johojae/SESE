@@ -16,8 +16,8 @@
         android:padding="6dp">
 
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:id="@+id/icon_id"
             android:src="@drawable/beer"
@@ -25,17 +25,70 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_gravity="center"
             android:textColor="@color/black"
-            android:textSize="15sp"
             android:textStyle="bold"
-            android:layout_marginTop="10sp"
-            android:id="@+id/textview"
-            android:text="Icon name here ..."/>
+            android:layout_marginTop="2sp"
+            android:id="@+id/grid_beer_name"
+            android:autoSizeTextType="uniform"
+            android:text=""/>
+
+        <TableLayout
+            android:id="@+id/grid_table_layout"
+            android:layout_width= "wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/informationTextImg">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/grid_beer_category_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
+                    android:text="분류 |" />
+
+                <TextView
+                    android:id="@+id/grid_beer_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:linksClickable="true" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/grid_beer_country_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
+                    android:text="국가 |" />
+                <TextView
+                    android:id="@+id/grid_beer_country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/grid_beer_alcoholicity_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
+                    android:text="도수 |" />
+
+                <TextView
+                    android:id="@+id/grid_beer_alcoholicity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </TableRow>
+        </TableLayout>
 
     </LinearLayout>
-
-
-
 </com.google.android.material.card.MaterialCardView>

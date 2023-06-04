@@ -28,6 +28,13 @@ public class ServerManager {
 
     public static final String SUB_API_INFO_BY_BARCODE = "beerinfo/barcode/";
     public static final String SUB_API_INFO_BY_BEER_ID = "beerinfo/beerid/";
+    public static final String SUB_API_INFO_BY_CATEGORY_BEER_LIST = "category/beers/";
+
+    public static final String SUB_API_INFO_BY_RECOMMEND_NEW_BEER_LIST = "recommend/new/";
+
+    public static final String SUB_API_INFO_BY_RECOMMEND_RATE_BEER_LIST = "recommend/rate/";
+
+    public static final String SUB_API_INFO_BY_SEARCH = "search/";
 
     public static final String addrPrefix = "https://";
 
