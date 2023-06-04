@@ -1,12 +1,15 @@
 package com.sese.showmethebeer;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.sese.showmethebeer.data.DetailBeerInfo;
 
 public class BeerListAdapter extends BaseAdapter {
 
@@ -17,20 +20,20 @@ public class BeerListAdapter extends BaseAdapter {
         public TextView textTitle;
     }
 
-    private BeerModel[] items;
+    private DetailBeerInfo[] items;
     private LayoutInflater mInflater;
 
-    public BeerListAdapter(Context context, BeerModel[] locations){
+    public BeerListAdapter(Context context, DetailBeerInfo[] locations){
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
         items = locations;
     }
 
-    public BeerModel[] getItems(){
+    public DetailBeerInfo[] getItems(){
         return items;
     }
 
-    public void setItems (BeerModel[] items){
+    public void setItems (DetailBeerInfo[] items){
         this.items = items;
     }
 
@@ -52,9 +55,10 @@ public class BeerListAdapter extends BaseAdapter {
 
     public long getItemId(int position) {
         if(items != null && position >=0 && position < getCount()){
-            return items[position].id;
+            //return items[position].;
+            return position;
         }
-        return 0;
+       return 0;
     }
 
     @Override
@@ -72,14 +76,20 @@ public class BeerListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        BeerModel beerModel = items[position];
-        SetCatImage(position, viewHolder, beerModel.name);
+        DetailBeerInfo beer = items[position];
+        SetCatImage(position, viewHolder, beer.getName(), beer.getThumbnail());
 
         return view;
     }
 
-    private void SetCatImage(int position, ViewHolder viewHolder, String title){
-        viewHolder.imageView.setImageResource(R.drawable.beer);
+    private void SetCatImage(int position, ViewHolder viewHolder, String title, String url){
+        if (url != null && url.length() > 0) {
+            ImageLoadTask task = new ImageLoadTask(url, viewHolder.imageView);
+            task.execute();
+        }
+        else {
+            viewHolder.imageView.setImageResource(R.drawable.beer);
+        }
         viewHolder.textTitle.setText(title);
     }
 

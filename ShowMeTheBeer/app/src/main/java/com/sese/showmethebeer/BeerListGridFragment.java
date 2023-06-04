@@ -15,14 +15,16 @@ import androidx.annotation.Nullable;
 
 import androidx.fragment.app.Fragment;
 
+import com.sese.showmethebeer.data.DetailBeerInfo;
+
 @SuppressLint("ValidFragment")
 public class BeerListGridFragment extends Fragment {
     private GridView mGridView;
     private BeerListAdapter mGridAdapter;
-    BeerModel[] beers = {};
+    DetailBeerInfo[] beers = {};
     private Activity activity;
 
-    public BeerListGridFragment(BeerModel[] beers, Activity activity){
+    public BeerListGridFragment(DetailBeerInfo[] beers, Activity activity){
         this.beers = beers;
         this.activity = activity;
     }
@@ -59,6 +61,6 @@ public class BeerListGridFragment extends Fragment {
     public void onGridItemClick(GridView g, View v, int pos, long id){
         Toast.makeText(
                 activity,
-                "Position Clicked:" + pos + " & Text is: " + beers[pos].name, Toast.LENGTH_LONG).show();
+                "Position Clicked:" + pos + " & Text is: " + beers[pos].getName(), Toast.LENGTH_LONG).show();
     }
 }
