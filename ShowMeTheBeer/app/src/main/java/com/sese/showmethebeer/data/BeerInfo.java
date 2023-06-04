@@ -14,6 +14,8 @@ public class BeerInfo {
     protected String thumbnail;
     protected String country;
 
+    protected boolean isNew = false;
+
     public BeerInfo(JSONObject jsonObj) {
         // {
         //                "id": "800010000001",
@@ -54,6 +56,13 @@ public class BeerInfo {
             country = jsonObj.getString(Constants.KEY_SERVER_COUNTRY);
         } catch (Exception e) {
         }
+
+        try {
+            if (jsonObj.has(Constants.KEY_SERVER_NEW)) {
+                isNew = jsonObj.getBoolean(Constants.KEY_SERVER_NEW);
+            }
+        } catch (Exception e) {
+        }
     }
 
     public BeerInfo() { //test code
@@ -88,5 +97,6 @@ public class BeerInfo {
         return country;
     }
 
+    public boolean isNew() { return isNew; }
 
 }

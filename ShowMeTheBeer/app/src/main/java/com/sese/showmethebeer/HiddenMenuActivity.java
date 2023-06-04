@@ -18,6 +18,7 @@ public class HiddenMenuActivity extends AppCompatActivity {
             "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\:" +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
     Context context = null;
@@ -44,12 +45,17 @@ public class HiddenMenuActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener () {
             public void onClick(View var1) {
                 String text = editText.getText().toString();
-                if (!text.matches(IPADDRESS_PATTERN)) {
+                /*if (!text.matches(IPADDRESS_PATTERN)) {
                     Toast.makeText(context, "192.168.0.10:1234 형식으로 넣어주세요", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
 
-                sqliteMngr.updateServerIpsAddress(text);
+                boolean result = sqliteMngr.updateServerIpsAddress(text);
+                if (result) {
+                    Toast.makeText(context, "저장했습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

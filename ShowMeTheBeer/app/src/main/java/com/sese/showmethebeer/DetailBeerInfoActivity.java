@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
     private SQLiteManager sqLiteManager;
 
     DetailBeerInfo objDetailBeerInfo;
+    ImageLoadTaskManager imgLoadTaskMngr;
 
     //flag data
     boolean markingState_marked = false;
@@ -81,7 +83,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
     Call beerInfoCall = null;
 
-    ArrayList<DetailBeerInfo> objSmiliarBeerInfos = null;
+    ArrayList<DetailBeerInfo> similarBeerInfos = null;
 
     FloatingActionButton scanFloatingBt = null;
     Toast toast = null;
@@ -119,6 +121,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         context = this;
         App app = (App)getApplication();
         sqLiteManager = app.getSQLiteManager();
+        imgLoadTaskMngr = new ImageLoadTaskManager();
 
         Intent intent = getIntent();
 
@@ -127,7 +130,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         String beerId = intent.getStringExtra(Constants.INTENT_KEY_BEERID);
         String from = intent.getStringExtra(Constants.INTENT_KEY_FROM);
 
-        System.out.println("DetailBeerInfoActivity barcode = " + ", beerId = " + beerId + " , from = " + from);
+        System.out.println("DetailBeerInfoActivity barcode = " + barcode + ", beerId = " + beerId + " , from = " + from);
 
         detailInfoNoNetworkLayout = findViewById(R.id.detailInfoNoNetworkLayout);
         detailInfoFullLayout = findViewById(R.id.detailInfoFullLayout);
@@ -191,17 +194,25 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             }
         });
 
-        
         //Server에서 DetailBeerInfo를 get해 온 후 , 맞게 UPDATE함.
         showDetailBeerInfo();
     }
 
     public void onDestroy() {
         super.onDestroy();
-        for (int i = MESSAGE_ID_DIALOG_START + 1 ; i < MESSAGE_ID_DIALOG_END; i++) {
-            handler.removeMessages(i);
+        if (handler != null) {
+            for (int i = MESSAGE_ID_DIALOG_START + 1; i < MESSAGE_ID_DIALOG_END; i++) {
+                handler.removeMessages(i);
+            }
         }
-        beerInfoCall.cancel();
+
+        if (beerInfoCall != null) {
+            beerInfoCall.cancel();
+        }
+
+        if (imgLoadTaskMngr != null) {
+            imgLoadTaskMngr.cancelAllImageLoadTask();
+        }
     }
 
     private String getCategoryText(String categoryId) {
@@ -244,7 +255,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             String thumbnailUrl = objDetailBeerInfo.getThumbnail();
 
             if (thumbnailUrl != null && thumbnailUrl.length() > 0) {
-                ImageLoadTask task = new ImageLoadTask(objDetailBeerInfo.getThumbnail(), beerImageView);
+                ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, beerImageView);
                 task.execute();
             }
             beerNameText.setText(objDetailBeerInfo.getName());
@@ -257,13 +268,13 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 beerNameEngText.setVisibility(View.GONE);
             }
 
-
-            SpannableStringBuilder ssb = new SpannableStringBuilder();
-            SpannableStringBuilder append = ssb.append(getCategoryText(objDetailBeerInfo.getCategoryId()));
-            ssb.setSpan(new URLSpan("#"), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            categoryTextView.setText(ssb, TextView.BufferType.SPANNABLE);
-
-            //categoryTextView.setText(getCategoryText(objDetailBeerInfo.getCategoryId()));
+            String categoryText = getCategoryText(objDetailBeerInfo.getCategoryId());
+            if (categoryText != null && !categoryText.isEmpty()) {
+                SpannableStringBuilder ssb = new SpannableStringBuilder();
+                SpannableStringBuilder append = ssb.append(categoryText);
+                ssb.setSpan(new URLSpan("#"), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                categoryTextView.setText(ssb, TextView.BufferType.SPANNABLE);
+            }
 
             categoryTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -302,6 +313,16 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             });
 
             showCarbonicAcideInfo(objDetailBeerInfo.getCarbonicAcidLevel());
+
+            similarBeerInfos = objDetailBeerInfo.getRelatedBeersInfos();
+            if (similarBeerInfos != null && similarBeerInfos.size() > 0) {
+                TextView smilarBeerText = findViewById(R.id.smilarBeerText);
+                smilarBeerText.setVisibility(View.VISIBLE);
+
+                TableLayout similarBeerTableLayout = findViewById(R.id.similarBeerTableLayout);
+                similarBeerTableLayout.setVisibility(View.VISIBLE);
+                showSimilarBeer();
+            }
         }
     }
 
@@ -404,6 +425,43 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showSimilarBeer() {
+        if (similarBeerInfos == null || similarBeerInfos.isEmpty()) {
+            return;
+        }
+        int similarBeerCount = similarBeerInfos.size();
+        if (similarBeerCount >= 1) {
+            showSimilarBeerSub(0, findViewById(R.id.smilarBeerImageView_1));
+        }
+
+        if (similarBeerCount >= 2) {
+            showSimilarBeerSub(1, findViewById(R.id.smilarBeerImageView_2));
+        }
+
+        if (similarBeerCount >= 3) {
+            showSimilarBeerSub(2, findViewById(R.id.smilarBeerImageView_3));
+        }
+    }
+
+    private void showSimilarBeerSub(int listIndex, ImageView imgView) {
+        DetailBeerInfo similarBeerInfo = similarBeerInfos.get(listIndex);
+        String thumbnailUrl = similarBeerInfo.getThumbnail();
+
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
+                intent.putExtra(Constants.INTENT_KEY_BEERID, similarBeerInfo.getBeerId());
+                startActivity(intent);
+            }
+        });
+
+        if (thumbnailUrl != null && thumbnailUrl.length() > 0) {
+            ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, imgView);
+            task.execute();
+        }
     }
 
     private void showToast(int textId) {

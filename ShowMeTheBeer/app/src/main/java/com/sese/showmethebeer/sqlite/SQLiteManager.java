@@ -71,7 +71,6 @@ public class SQLiteManager extends SQLiteDBOpenHelper {
                 list.add(new UserBeerInfo(mCursor.getString(0), mCursor.getInt(1)));
             } while(mCursor.moveToNext());
         }
-        System.out.println("getUserBeerList------------");
         for (int i = 0 ; i < list.size(); i++) {
             UserBeerInfo userBeerInfo = list.get(i);
             System.out.println(userBeerInfo.getBeerId() + " , " + userBeerInfo.getRating());
@@ -114,7 +113,7 @@ public class SQLiteManager extends SQLiteDBOpenHelper {
             serverIpAddr =  mCursor.getString(mCursor.getColumnIndexOrThrow(KEY_SERVER_IP));
         }
         mCursor.close();
-
+        System.out.println("SQLiteManager getServerIpAddress: " + serverIpAddr);
         return serverIpAddr;
     }
 
@@ -122,9 +121,9 @@ public class SQLiteManager extends SQLiteDBOpenHelper {
 
         Cursor mCursor = db.rawQuery("SELECT * FROM " + TABLE_INTERNAL_SETTING, null);
         if (mCursor.moveToFirst()) { //이미 기존에 존재하는 경우
-            db.execSQL("UPDATE " + TABLE_INTERNAL_SETTING + " SET " + KEY_SERVER_IP + "=" + ipAddr);
+            db.execSQL("UPDATE " + TABLE_INTERNAL_SETTING + " SET " + KEY_SERVER_IP + "=\'" + ipAddr  +"'");
         } else {
-            db.execSQL("INSERT INTO " + TABLE_INTERNAL_SETTING + " VALUES('" + KEY_SERVER_IP + "'," + 0 + ")");
+            db.execSQL("INSERT INTO " + TABLE_INTERNAL_SETTING + " VALUES('" + KEY_SERVER_IP + "'," + ipAddr + ")");
         }
         mCursor.close();
 

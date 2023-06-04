@@ -47,4 +47,8 @@ public class Constants {
     public static final String KEY_SERVER_DESC = "description";
 
     public static final String KEY_SERVER_COUNTRY = "country";
+
+    public static final String KEY_SERVER_NEW = "new";
+
+    public static final String KEY_SERVER_RELATED_BEERS = "relatedBeers";
 }

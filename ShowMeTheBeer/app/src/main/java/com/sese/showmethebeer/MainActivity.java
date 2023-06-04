@@ -8,6 +8,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,16 +16,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.sese.showmethebeer.databinding.ActivityMainBinding;
+import com.sese.showmethebeer.sqlite.SQLiteManager;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    ImageView newBeerImageView = null;
+    private SQLiteManager sqLiteManager;
+
+    RelativeLayout userGuideLayout;
+    CoordinatorLayout mainMenuLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +38,54 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        sqLiteManager = ((App)getApplication()).getSQLiteManager();
 
-        newBeerImageView = binding.getRoot().getRootView().findViewById(R.id.newBeerImageView);
+        userGuideLayout = binding.getRoot().getRootView().findViewById(R.id.userGuideLayout);
+        mainMenuLayout = binding.getRoot().getRootView().findViewById(R.id.mainMenuLayout);
 
-        AppBarLayout appBarLayout = binding.getRoot().getRootView().findViewById(R.id.mainAppBar);
+        boolean userGuideRead = sqLiteManager.checkUserGuideRead();
+        System.out.println("MainActivity :: OnCreate : checkUserGuideRead:" + userGuideRead);
+
+        if (!userGuideRead) { //기존에 user guide를 보여주지 않았으면
+            showUserGuideLayout();
+        } else {
+            showMainLayout();
+        }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        boolean userGuideRead = sqLiteManager.checkUserGuideRead();
+        System.out.println("MainActivity :: onResume : checkUserGuideRead:" + userGuideRead);
+        if (!userGuideRead) { //기존에 user guide를 보여주지 않았으면
+            showUserGuideLayout();
+        } else {
+            showMainLayout();
+        }
+    }
+
+    private void showUserGuideLayout() {
+        userGuideLayout.setVisibility(View.VISIBLE);
+        mainMenuLayout.setVisibility(View.GONE);
+
+        ImageView userGuideSkipImageView = userGuideLayout.findViewById(R.id.userGuideSkipImageView);
+        ImageView userGuideNextImageView = userGuideLayout.findViewById(R.id.userGuideNextImageView);
+
+        userGuideSkipImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMainLayout();
+                sqLiteManager.updateUserGuideRead(true);
+            }
+        });
+
+
+    }
+    private void showMainLayout() {
+        userGuideLayout.setVisibility(View.GONE);
+        mainMenuLayout.setVisibility(View.VISIBLE);
+        ImageView newBeerImageView = mainMenuLayout.findViewById(R.id.newBeerImageView);
+        AppBarLayout appBarLayout = mainMenuLayout.findViewById(R.id.mainAppBar);
         appBarLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -59,10 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void showMenu() {
-        TableRow menuScan = binding.getRoot().getRootView().findViewById(R.id.id_main_row_scan);
+        TableRow menuScan = mainMenuLayout.findViewById(R.id.id_main_row_scan);
         menuScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TableRow menuCategory = binding.getRoot().getRootView().findViewById(R.id.id_main_row_category);
+        TableRow menuCategory = mainMenuLayout.findViewById(R.id.id_main_row_category);
         menuCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TableRow menuRecommend = binding.getRoot().getRootView().findViewById(R.id.id_main_row_recommend);
+        TableRow menuRecommend = mainMenuLayout.findViewById(R.id.id_main_row_recommend);
         menuRecommend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TableRow menuStore = binding.getRoot().getRootView().findViewById(R.id.id_main_row_store);
+        TableRow menuStore = mainMenuLayout.findViewById(R.id.id_main_row_store);
         menuStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TableRow menuMyBeer = binding.getRoot().getRootView().findViewById(R.id.id_main_row_my_beer);
+        TableRow menuMyBeer = mainMenuLayout.findViewById(R.id.id_main_row_my_beer);
         menuMyBeer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
