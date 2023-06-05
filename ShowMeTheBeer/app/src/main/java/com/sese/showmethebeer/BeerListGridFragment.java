@@ -2,6 +2,7 @@ package com.sese.showmethebeer;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -62,8 +63,10 @@ public class BeerListGridFragment extends Fragment {
     }
 
     public void onGridItemClick(GridView g, View v, int pos, long id){
-        Toast.makeText(
-                activity,
-                "Position Clicked:" + pos + " & Text is: " + beers[pos].getName(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(activity,"Position Clicked:" + pos + " & Text is: " + beers[pos].getName(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getContext(), DetailBeerInfoActivity.class);
+        intent.putExtra(Constants.INTENT_KEY_FROM, "BeerListActvity");
+        intent.putExtra(Constants.INTENT_KEY_BEERID, beers[pos].getBeerId());
+        getContext().startActivity(intent);
     }
 }

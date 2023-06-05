@@ -244,10 +244,14 @@ public class BeerListActivity extends FragmentActivity{
                     App app = (App)getApplication();
                     ServerManager manager = app.getServerMngr();
 
-                    //ArrayList<String> getBeerIdsByRate(int count)
-                    String temp = "b00010;b00020;b00030;b00040;b00050";
+                    StringBuilder param = new StringBuilder();
 
-                    manager.send(ServerManager.SUB_API_INFO_BY_RECOMMEND_RATE_BEER_LIST + temp, getRecommendRateListCallback());
+                    ArrayList<String> rate =  sqLiteManager.getBeerIdsByRate(10);
+                    for(int i = 0; i<rate.size(); i++){
+                        param.append(rate.get(i));
+                    }
+
+                    manager.send(ServerManager.SUB_API_INFO_BY_RECOMMEND_RATE_BEER_LIST + param, getRecommendRateListCallback());
                 }
             }.start();
         }
