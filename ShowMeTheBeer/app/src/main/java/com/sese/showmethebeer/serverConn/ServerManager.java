@@ -36,13 +36,12 @@ public class ServerManager {
 
     public static final String SUB_API_INFO_BY_SEARCH = "search/";
 
-    public static final String addrPrefix = "http://";
+    public static final String addrPrefix = "https://";
 
     public ServerManager(App app, Context context) {
         this.app = app;
         this.context = context;
-        //ipAddr = "192.168.1.176:8443"; //app.getSQLiteManager().getServerIpAddress(); //ex, 192.168.0.10:1234
-        ipAddr = "10.0.2.2:4000";
+        ipAddr = "192.168.1.176:8443"; //app.getSQLiteManager().getServerIpAddress(); //ex, 192.168.0.10:1234
     }
 
     public Call send(String apiSubUrl, Callback callback) {
