@@ -164,33 +164,20 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         } else {
             if (barcode != null && !barcode.isEmpty()) { //barcode로 요청하는 경우
                 requestDataByBarCode(barcode);
-                Toast.makeText(this, "barcode :: " + barcode, 60*60).show();
+                //Toast.makeText(this, "barcode :: " + barcode, 60*60).show();
             } else if (beerId != null && !beerId.isEmpty()){
                 requestDataByBeerId(beerId);
-                Toast.makeText(this, "beerId :: " + barcode, 60*60).show();
+                //Toast.makeText(this, "beerId :: " + barcode, 60*60).show();
             }
         }
 
-        handleBookMarkView();
+        handleBookMarkAndRatingView();
+
         scanFloatingBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), BeerClassifierActivity.class);
                 startActivity(intent);
-            }
-        });
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                int rating = (int) (v*2); //int값으로 저장
-                sqLiteManager.saveRating(objDetailBeerInfo.getBeerId(), rating);
-
-                showToast(R.string.text_save_rating);
-
-                if (!markingState_marked) { //rating 저장하면 자동으로 book mark되도록 함
-                    bookMark.setImageResource(R.drawable.book_marked);
-                    markingState_marked = true;
-                }
             }
         });
 
@@ -241,10 +228,10 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
         boolean networkConnected = NetworkConnectionUtil.isNetworkAvailable(context);
 
-        System.out.println("isNetworkAvailable::" + networkConnected);
+        System.out.println("showDetailBeerInfo isNetworkAvailable::" + networkConnected);
 
         detailInfoNoNetworkLayout.setVisibility(networkConnected? View.GONE : View.VISIBLE);
-        System.out.println("detailInfoNoNetworkLayout::" + detailInfoNoNetworkLayout.getVisibility());
+        System.out.println("showDetailBeerInfo detailInfoNoNetworkLayout::" + detailInfoNoNetworkLayout.getVisibility());
         detailInfoFullLayout.setVisibility(networkConnected? View.VISIBLE : View.GONE);
 
         if (!networkConnected) {
@@ -282,7 +269,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                     //beerList activity 띄우기 TODO
                     Intent intent = new Intent(getApplicationContext(), BeerListActivity.class);
                     intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_CATEGORY);
-                    intent.putExtra(Constants.INTENT_KEY_CATEGORY, objDetailBeerInfo.getCategoryId());
+                    intent.putExtra(Constants.INTENT_KEY_CATEGORY_ID, objDetailBeerInfo.getCategoryId());
                     startActivity(intent);
                 }
             });
@@ -355,6 +342,8 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 drawableId = R.drawable.freshness5;
                 levelTextId = R.string.refreshness5_info;
                 break;
+            default:
+                return;
 
         }
 
@@ -383,7 +372,23 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         }
     }
 
-    private void handleBookMarkView () {
+    private void handleBookMarkAndRatingView () {
+        if (objDetailBeerInfo == null) {
+            bookMark.setVisibility(View.GONE);
+            ratingBar.setVisibility(View.GONE);
+            return;
+        } else {
+            bookMark.setVisibility(View.VISIBLE);
+            ratingBar.setVisibility(View.VISIBLE);
+        }
+
+        int rating = sqLiteManager.getRating(objDetailBeerInfo.getBeerId());
+
+        if (rating != -1) { //-1이면, DB에 없음, nothing to do
+            bookMark.setImageResource(R.drawable.book_marked);
+            ratingBar.setRating(rating/2);
+        }
+
         bookMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -422,6 +427,21 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                     bookMark.setImageResource(R.drawable.book_marked);
                     sqLiteManager.saveRating(objDetailBeerInfo.getBeerId(), rating);
                     updateSaveMarkState(rating);
+                }
+            }
+        });
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                int rating = (int) (v*2); //int값으로 저장
+                sqLiteManager.saveRating(objDetailBeerInfo.getBeerId(), rating);
+
+                showToast(R.string.text_save_rating);
+
+                if (!markingState_marked) { //rating 저장하면 자동으로 book mark되도록 함
+                    bookMark.setImageResource(R.drawable.book_marked);
+                    markingState_marked = true;
                 }
             }
         });
@@ -496,11 +516,11 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         return new Callback() {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                System.out.println("DetailBeerInfoActivity::onResponse:" + response);
+                System.out.println("hyejeongyang :: DetailBeerInfoActivity::onResponse:" + response);
                 if (response.code() == 200) {
                     // Get response
                     String jsonData = response.body().string();
-                    System.out.println("DetailBeerInfoActivity::" + jsonData);
+                    System.out.println("hyejeongyang :: DetailBeerInfoActivity::" + jsonData);
                     try {
                         objDetailBeerInfo
                                 = new DetailBeerInfoHelper()
@@ -511,8 +531,10 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                         } else {
                             handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                         }
-
                     } catch (JSONException e) {
+                        System.out.println("hyejeongyang :: DetailBeerInfoActivity:: Exception");
+                        e.printStackTrace();
+                        handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                         throw new RuntimeException(e);
                     }
                 } else if (response.code() == 404) {

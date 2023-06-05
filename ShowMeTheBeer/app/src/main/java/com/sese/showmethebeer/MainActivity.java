@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.view.Menu;
@@ -25,6 +26,8 @@ import android.widget.TableRow;
 import com.sese.showmethebeer.databinding.ActivityMainBinding;
 import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 import com.sese.showmethebeer.sqlite.SQLiteManager;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -99,6 +102,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        SearchView searchView = mainMenuLayout.findViewById(R.id.beerSearchView);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+            @Override
+            public boolean onQueryTextSubmit(String query){
+
+                Intent intent = new Intent(MainActivity.this, BeerListActivity.class);
+
+                intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_SEARCH);
+                intent.putExtra(Constants.INTENT_KEY_SEARCH_TEXT, query);
+                MainActivity.this.startActivity(intent);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText){
+                return false;
+            }
+
+        });
+
         showMenu();
         showFloatingActionButton();
 
@@ -144,18 +169,8 @@ public class MainActivity extends AppCompatActivity {
         menuCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
-                {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("네트워크 에러")
-                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .create()
-                            .show();
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this)) {
+                    showNoNetworkDialog();
                     return;
                 }
 
@@ -171,18 +186,8 @@ public class MainActivity extends AppCompatActivity {
                 //Intent intent = new Intent(getApplicationContext(), BeerRecommenderActivity.class); //TODO
                 //startActivity(intent);
 
-                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
-                {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("네트워크 에러")
-                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .create()
-                            .show();
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this)) {
+                    showNoNetworkDialog();
                     return;
                 }
 
@@ -197,18 +202,8 @@ public class MainActivity extends AppCompatActivity {
         menuStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
-                {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("네트워크 에러")
-                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .create()
-                            .show();
+                if (!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this)) {
+                    showNoNetworkDialog();
                     return;
                 }
 
@@ -221,18 +216,8 @@ public class MainActivity extends AppCompatActivity {
         menuMyBeer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
-                {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("네트워크 에러")
-                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .create()
-                            .show();
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this)) {
+                    showNoNetworkDialog();
                     return;
                 }
 
@@ -247,18 +232,8 @@ public class MainActivity extends AppCompatActivity {
         fab2.setOnClickListener(new View.OnClickListener() { //DetailBeerInfoActivity를 띄우기 위한 임의 코드
             @Override
             public void onClick(View view) {
-                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
-                {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("네트워크 에러")
-                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .create()
-                            .show();
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this)) {
+                    showNoNetworkDialog();
                     return;
                 }
 
@@ -270,4 +245,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showNoNetworkDialog() {
+        new AlertDialog.Builder(MainActivity.this)
+            .setTitle("네트워크 에러")
+            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            })
+            .create()
+            .show();
+    }
 }

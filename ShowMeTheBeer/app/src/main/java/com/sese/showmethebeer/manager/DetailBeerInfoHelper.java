@@ -34,7 +34,7 @@ public class DetailBeerInfoHelper {
         try {
             JSONArray list = respObj.getJSONArray(Constants.KEY_SERVER_LIST);
             if (list != null && list.length() > 0) {
-                DetailBeerInfo detailBeerInfo = new DetailBeerInfo(respObj);
+                DetailBeerInfo detailBeerInfo = new DetailBeerInfo(list.getJSONObject(0));
                 return detailBeerInfo;
             } else {
                 return null;
