@@ -68,7 +68,7 @@
 <!--            </intent-filter>-->
 <!--        </activity>-->
         <activity
-            android:name=".BeerStoreManagerActivity2"
+            android:name=".BeerStoreViewpagerManagerActivity"
             android:exported="false" >
             <intent-filter>
                 <action android:name="android.intent.internal.action.BEER_STORE" />

@@ -23,13 +23,11 @@ public class BeerStoreManager3 extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     protected LocationManager locationManager;
-
-
+    
     public BeerStoreManager3(Context context) {
         this.mContext = context;
         getLocation();
     }
-
 
     public Location getLocation() {
         try {

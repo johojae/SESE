@@ -15,7 +15,6 @@ public class BeerStoreManager {
         String address_name;
         double lat;
         double lng;
-
         int id;
         String category_group_code;
         String category_group_name;
@@ -23,10 +22,22 @@ public class BeerStoreManager {
         String place_url;
         String road_address_name;
 
+        int getId() {
+            return id;
+        }
         String logString()
         {
             return "place_name : " + place_name + ", distance = " + distance;
         }
+
+//        @Override
+//        public boolean equals(Object anObject) {
+//            if (!(anObject instanceof StoreData)) {
+//                return false;
+//            }
+//            StoreData otherMember = (StoreData)anObject;
+//            return (otherMember.getId() == ((StoreData) anObject).getId());
+//        }
     }
 
     boolean is_end = false;
