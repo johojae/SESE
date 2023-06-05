@@ -29,17 +29,17 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Fragment_List extends Fragment implements Serializable {
     Activity activity;
     View view;
 
+    RecyclerView recyclerView;
     ArrayList<String> storeListStringArray = new ArrayList<String>();
-
-    public RecyclerView recyclerView;
-    public RecyclerView.Adapter adapter;
-    public ArrayList<itemData> items = new ArrayList<>();
+    List<itemData> itemDataList = new ArrayList<itemData>();
+    Adapter dataAdapter = new Adapter(itemDataList);
     public static Fragment_List newInstance(int number) {
         Fragment_List fp = new Fragment_List();
         Bundle bundle = new Bundle();
@@ -55,32 +55,9 @@ public class Fragment_List extends Fragment implements Serializable {
         getParentFragmentManager().setFragmentResultListener("storeList", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
-                // We use a String here, but any type that can be put in a Bundle is supported
-//                storeListStringArray = new ArrayList<String>();
+                storeListStringArray.clear();
                 storeListStringArray.addAll(bundle.getStringArrayList("data"));
-//                byte[] byteArray = bundle.getByteArray("data");
-                // Do something with the result...
-//                ObjectInputStream ois = null;
-//                ArrayList<BeerStoreManager.StoreData> list = new ArrayList<BeerStoreManager.StoreData>();
-//                try {
-//                    ois = new ObjectInputStream(new ByteArrayInputStream(byteArray));
-//                    try {
-//                        list.addAll((ArrayList<BeerStoreManager.StoreData>) ois.readObject());
-//                        int sizo = list.size();
-//                    } catch (ClassNotFoundException e) {
-//                        throw new RuntimeException(e);
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    } finally {
-//                        ois.close();
-//                    }
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                List<BeerStoreManager.StoreData> tempList = new <BeerStoreManager.StoreData> ArrayList(Arrays.asList(byteArray));
-
-
-
+                itemDataList.clear();
             }
         });
     }
@@ -92,33 +69,27 @@ public class Fragment_List extends Fragment implements Serializable {
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_beer_store_list , container, false);
 
-//        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-//        recyclerView.setHasFixedSize(true);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
 
         return view;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-//        List<itemData> itemDataList = new ArrayList<itemData>();
-//        itemDataList.add(new itemData(10,"nam","pho"));
-//
-//        adapter = new Adapter(itemDataList);
-//        RecyclerView.LayoutManager mlayoutManager = new LinearLayoutManager(getActivity());
-//        recyclerView.setLayoutManager(mlayoutManager);
-//        recyclerView.setAdapter(adapter);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
+    public void onStart() {
+        super.onStart();
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), DividerItemDecoration.VERTICAL)); // 구분선
 
-        List<itemData> itemDataList = new ArrayList<itemData>();
-        Adapter dataAdapter = new Adapter(itemDataList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(dataAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         int sizeOfStringArray = storeListStringArray.size();
         if(sizeOfStringArray == 0)
@@ -128,6 +99,8 @@ public class Fragment_List extends Fragment implements Serializable {
         }
         else {
             int sizeOfStoreList = Integer.valueOf(storeListStringArray.get(0));
+
+//            List<itemData> tempList = new ArrayList<itemData>();
             if (sizeOfStoreList == (sizeOfStringArray - 1)/3) {
                 for (int idx = 0; idx < sizeOfStoreList; idx++) {
                     int distance;
@@ -141,71 +114,29 @@ public class Fragment_List extends Fragment implements Serializable {
                         distance = 0;
                     }
                     itemData data = new itemData(distance, name, phone);
-                    itemDataList.add(data);
+
+                    boolean skipFlag = false;
+                    for(itemData _d:itemDataList)
+                    {
+                        if(_d.name.equals(name) || _d.phone.equals(phone))
+                        {
+                            skipFlag = true;
+                            //itemDataList.remove(_d);
+                            break;
+                        }
+                    }
+                    if(!skipFlag)
+                        itemDataList.add(data);
+//                    tempList.add(data);
                 }
+
+//                itemDataList.addAll(tempList);
             }
         }
 
-        recyclerView.setAdapter(dataAdapter);
+        Collections.sort(itemDataList);
 
-
-//        dataAdapter.notifyDataSetChanged();
-//
-//        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-//        recyclerView.setHasFixedSize(true);
-//
-//        //recyclerViewList.add(new RecyclerView(activity));
-//
-////        RecyclerView recyclerView = recyclerViewList.get(0);
-////
-////        recyclerViewContainer = (ViewGroup) view.findViewById(R.id.recycler_view);
-////        recyclerViewContainer.addView(recyclerView);
-//
-//        //RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-//
-//////        List<BeerStoreManager.StoreData> storeDataList = fragmentMap.storeDataList;
-////        //fragmentMap.mapViewList.get(0).getPOIItems();
-////
-////        firstShow = true;
-////
-//        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), DividerItemDecoration.VERTICAL)); // 구분선
-//
-////        LinearLayoutManager linearLayoutManager;
-////        linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-////
-////        recyclerView.setLayoutManager(linearLayoutManager); // 리사이클러뷰에 set 해준다 .
-//
-//        List<itemData> itemDataList = new ArrayList<itemData>();
-//        Adapter dataAdapter = new Adapter(itemDataList);
-//        RecyclerView.LayoutManager mlayoutManager = new LinearLayoutManager(getActivity());
-//        recyclerView.setLayoutManager(mlayoutManager);
-//        recyclerView.setAdapter(dataAdapter);
-//
-//        int sizeOfStringArray = storeListStringArray.size();
-//        if(sizeOfStringArray == 0)
-//        {
-//            itemData data = new itemData(0, "빈 리스트", "");
-//            itemDataList.add(data);
-//        }
-//        else {
-//            int sizeOfStoreList = Integer.valueOf(storeListStringArray.get(0));
-//            if(sizeOfStoreList == sizeOfStringArray - 1)
-//            {
-//                for(int idx = 1; idx < sizeOfStoreList; idx++)
-//                {
-//                    itemData data = new itemData(Integer.valueOf(storeListStringArray.get(idx)), storeListStringArray.get(idx + 1), storeListStringArray.get(idx + 2));
-//                    itemDataList.add(data);
-//                }
-//            }
-//
-////        for(BeerStoreManager.StoreData storeData:storeDataList)
-////        {
-////            itemData data = new itemData(storeData.distance, storeData.place_name, storeData.phone);
-////            itemDataList.add(data);
-////        }
-//
-//            dataAdapter.notifyDataSetChanged();
-//        }
+        dataAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -215,7 +146,7 @@ public class Fragment_List extends Fragment implements Serializable {
         recyclerView.removeAllViews();
     }
 
-    public class itemData {
+    public class itemData implements Comparable<itemData> {
         int distance;
         String name;
         String phone;
@@ -257,6 +188,16 @@ public class Fragment_List extends Fragment implements Serializable {
             else
                 this.phone = phone;
             Log.d("ITEM", "! " + distance + "," + name + "," + phone);
+        }
+
+        @Override
+        public int compareTo(itemData data) {
+            if (data.distance < distance) {
+                return 1;
+            } else if (data.distance > distance) {
+                return -1;
+            }
+            return 0;
         }
     }
 
