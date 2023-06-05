@@ -103,9 +103,14 @@ public class BeerListActivity extends FragmentActivity{
 
                         }
 
+                        boolean isCategory = false;
+                        if(messageId == MESSAGE_ID_CATEGORY_BEER_INFO){
+                            isCategory = true;
+                        }
+
                         DetailBeerInfo[] bp = {};
                         DetailBeerInfo[] beerPage = tempBeerList.toArray(bp);
-                        gridFragments.add(new BeerListGridFragment(beerPage, BeerListActivity.this, true));
+                        gridFragments.add(new BeerListGridFragment(beerPage, BeerListActivity.this, isCategory));
                     }
 
                     pm = new PagerAdapter(BeerListActivity.this, gridFragments);

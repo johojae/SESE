@@ -1,6 +1,7 @@
 package com.sese.showmethebeer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,8 @@ public class BeerListAdapter extends BaseAdapter {
             viewHolder.textAlcoholicity = (TextView) view.findViewById(R.id.grid_beer_alcoholicity);
             viewHolder.textName = (TextView) view.findViewById(R.id.grid_beer_name);
 
+            viewHolder.textCategoryTag.setVisibility(View.GONE);
+
             if(isCategory == true)
             {
                 viewHolder.textCategoryTag.setVisibility(View.INVISIBLE);
@@ -113,6 +116,17 @@ public class BeerListAdapter extends BaseAdapter {
 
         SetCatImage(position, viewHolder, parentCategory, detailCategory, beer.getCountry(), beer.getAlcoholicity(), beer.getName(), beer.getThumbnail());
 
+        viewHolder.textCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //beerList activity 띄우기 TODO
+                Intent intent = new Intent(view.getContext(), BeerListActivity.class);
+                intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_CATEGORY);
+                intent.putExtra(Constants.INTENT_KEY_CATEGORY_ID, beer.getCategoryId());
+                view.getContext().startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -123,7 +137,7 @@ public class BeerListAdapter extends BaseAdapter {
         }
 
         viewHolder.textCategory.setText(parentCategory +" > " + detailCategory);
-        viewHolder.textCountry.setText(country);
+        viewHolder.textCountry.setText(country + " | ");
         viewHolder.textAlcoholicity.setText(alcoholicity);
         viewHolder.textName.setText(name);
     }

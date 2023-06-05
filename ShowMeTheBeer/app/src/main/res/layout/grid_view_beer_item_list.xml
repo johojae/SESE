@@ -53,6 +53,12 @@
                     android:id="@+id/grid_beer_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
                     android:linksClickable="true" />
             </TableRow>
 
@@ -60,30 +66,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <TextView
-                    android:id="@+id/grid_beer_country_tag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/grid_beer_country"
                     android:textStyle="bold"
                     android:textSize="10sp"
-                    android:text="국가 |" />
-                <TextView
-                    android:id="@+id/grid_beer_country"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/grid_beer_alcoholicity_tag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="10sp"
-                    android:text="도수 |" />
-
                 <TextView
                     android:id="@+id/grid_beer_alcoholicity"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </TableRow>
