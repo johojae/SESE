@@ -29,7 +29,7 @@
         android:layout_width="233dp"
         android:layout_height="236dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"/>
     </RelativeLayout>
     <!--android:layout_marginLeft="112dp"
         android:layout_marginTop="10dp"-->
@@ -55,7 +55,8 @@
             android:layout_width="30dp"
             android:layout_height="35dp"
             android:layout_marginLeft="3dp"
-            app:srcCompat="@drawable/book_unmarked" />
+            app:srcCompat="@drawable/book_unmarked"
+            android:visibility="gone"/>
     </TableRow>
     <TableRow
         android:layout_width="match_parent"
@@ -75,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_below="@id/beerNameLayout"
+        android:visibility="gone"
         android:numStars="5"
         android:rating="0"
         android:stepSize="0.5"/>
@@ -239,15 +241,15 @@
                 <ImageView
                     android:id="@+id/smilarBeerImageView_1"
                     android:layout_width="100dp"
-                    android:layout_height="200dp"/>
+                    android:layout_height="150dp"/>
                 <ImageView
                     android:id="@+id/smilarBeerImageView_2"
                     android:layout_width="100dp"
-                    android:layout_height="200dp"/>
+                    android:layout_height="150dp"/>
                 <ImageView
                     android:id="@+id/smilarBeerImageView_3"
                     android:layout_width="100dp"
-                    android:layout_height="200dp"/>
+                    android:layout_height="150dp"/>
             </TableRow>
         </TableLayout>
         </RelativeLayout>

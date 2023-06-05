@@ -19,7 +19,7 @@ public class DetailBeerInfo extends BeerInfo {
     private ArrayList<DetailBeerInfo> relatedBeers;
 
     //https://assets.business.veluga.kr/media/public/%E1%84%87%E1%85%A5%E1%84%83%E1%85%B3_%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%85%E1%85%AE%E1%84%87%E1%85%A9%E1%84%90%E1%85%B3%E1%86%AF_1.png
-    String testData = "{\"id\": \"800010000001\","
+    String testData = "{\"id\": \"b00033\","
             + "\"name\": \"버드와이저\","
             +  "\"englishName\": \"Budweiser \","
             + "\"iconUrl\": \"https://assets.business.veluga.kr/media/public/%E1%84%87%E1%85%A5%E1%84%83%E1%85%B3_%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%85%E1%85%AE%E1%84%87%E1%85%A9%E1%84%90%E1%85%B3%E1%86%AF_1.png\","

@@ -3,6 +3,7 @@ package com.sese.showmethebeer.serverConn;
 import android.content.Context;
 
 import com.sese.showmethebeer.App;
+import com.sese.showmethebeer.sqlite.SQLiteManager;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,7 +28,7 @@ public class ServerManager {
     String ipAddr = null;
 
     public static final String SUB_API_INFO_BY_BARCODE = "beerinfo/barcode/";
-    public static final String SUB_API_INFO_BY_BEER_ID = "beerinfo/beerid/";
+    public static final String SUB_API_INFO_BY_BEER_ID = "beerinfo/id/";
     public static final String SUB_API_INFO_BY_CATEGORY_BEER_LIST = "category/beers/";
 
     public static final String SUB_API_INFO_BY_RECOMMEND_NEW_BEER_LIST = "recommend/new/";
@@ -36,12 +37,17 @@ public class ServerManager {
 
     public static final String SUB_API_INFO_BY_SEARCH = "search/";
 
-    public static final String addrPrefix = "https://";
 
     public ServerManager(App app, Context context) {
         this.app = app;
         this.context = context;
-        ipAddr = "192.168.1.176:8443"; //app.getSQLiteManager().getServerIpAddress(); //ex, 192.168.0.10:1234
+        ipAddr = "https://192.168.1.176:8443"; //app.getSQLiteManager().getServerIpAddress(); //ex, 192.168.0.10:1234
+
+        SQLiteManager sqLiteManager = app.getSQLiteManager();
+        String dbIpAddr = sqLiteManager.getServerIpAddress();
+        if (dbIpAddr != null && dbIpAddr.length() >0 ) {
+            ipAddr = dbIpAddr;
+        }
     }
 
     public Call send(String apiSubUrl, Callback callback) {
@@ -50,7 +56,7 @@ public class ServerManager {
         }
         
         try {
-            String serverUrl = addrPrefix + ipAddr + "/" + apiSubUrl;
+            String serverUrl = ipAddr + "/" + apiSubUrl;
 
             System.out.println("serverUrl :: " + serverUrl);
 
