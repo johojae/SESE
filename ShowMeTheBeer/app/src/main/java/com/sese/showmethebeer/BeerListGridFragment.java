@@ -2,6 +2,7 @@ package com.sese.showmethebeer;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
@@ -14,9 +15,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.sese.showmethebeer.data.DetailBeerInfo;
+import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 
 @SuppressLint("ValidFragment")
 public class BeerListGridFragment extends Fragment {
@@ -63,6 +66,21 @@ public class BeerListGridFragment extends Fragment {
     }
 
     public void onGridItemClick(GridView g, View v, int pos, long id){
+        if(!NetworkConnectionUtil.isNetworkAvailable(v.getContext()))
+        {
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle("네트워크 에러")
+                    .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .create()
+                    .show();
+            return;
+        }
+
         //Toast.makeText(activity,"Position Clicked:" + pos + " & Text is: " + beers[pos].getName(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getContext(), DetailBeerInfoActivity.class);
         intent.putExtra(Constants.INTENT_KEY_FROM, "BeerListActvity");

@@ -11,7 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

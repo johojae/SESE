@@ -69,9 +69,9 @@ public class BeerListActivity extends FragmentActivity{
                 case MESSAGE_ID_CATEGORY_BEER_INFO:
                 case MESSAGE_ID_SEARCH_BEER_INFO:
                 case MESSAGE_ID_RECOMMEND_RATE_BEER_INFO:
+
                     for(int i = 0; i<beerList.size(); i++){
                         a.add(i, beerList.get(i));
-
                     }
 
                     Iterator<DetailBeerInfo> it = a.iterator();

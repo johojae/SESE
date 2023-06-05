@@ -1,6 +1,7 @@
 package com.sese.showmethebeer;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 
 import java.util.List;
 
@@ -50,6 +54,22 @@ public class CategoryNestedAdapter extends RecyclerView.Adapter<CategoryNestedAd
             itemView.setOnClickListener((new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if(!NetworkConnectionUtil.isNetworkAvailable(v.getContext()))
+                    {
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("네트워크 에러")
+                                .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .create()
+                                .show();
+                        return;
+                    }
+
                     int position = getAdapterPosition();
 
                     Intent intent = new Intent(v.getContext(), BeerListActivity.class);

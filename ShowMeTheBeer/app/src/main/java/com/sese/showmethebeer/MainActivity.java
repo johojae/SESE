@@ -1,5 +1,6 @@
 package com.sese.showmethebeer;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -7,6 +8,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
@@ -21,6 +23,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.sese.showmethebeer.databinding.ActivityMainBinding;
+import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 import com.sese.showmethebeer.sqlite.SQLiteManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -117,6 +120,21 @@ public class MainActivity extends AppCompatActivity {
         menuScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
+                {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("네트워크 에러")
+                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+
                 Intent intent = new Intent(getApplicationContext(), BeerClassifierActivity.class);
                 startActivity(intent);
             }
@@ -126,6 +144,21 @@ public class MainActivity extends AppCompatActivity {
         menuCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
+                {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("네트워크 에러")
+                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+
                 Intent intent = new Intent(getApplicationContext(), BeerCategoryActivity.class);
                 startActivity(intent);
             }
@@ -138,6 +171,21 @@ public class MainActivity extends AppCompatActivity {
                 //Intent intent = new Intent(getApplicationContext(), BeerRecommenderActivity.class); //TODO
                 //startActivity(intent);
 
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
+                {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("네트워크 에러")
+                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+
                 Intent intent = new Intent(MainActivity.this, BeerListActivity.class);
 
                 intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_RECOMMEND);
@@ -149,6 +197,21 @@ public class MainActivity extends AppCompatActivity {
         menuStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
+                {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("네트워크 에러")
+                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+
                 Intent intent = new Intent(getApplicationContext(), BeerStoreManagerActivity.class);
                 startActivity(intent);
             }
@@ -158,6 +221,21 @@ public class MainActivity extends AppCompatActivity {
         menuMyBeer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
+                {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("네트워크 에러")
+                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+
                 Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
                 startActivity(intent);
             }
@@ -169,6 +247,21 @@ public class MainActivity extends AppCompatActivity {
         fab2.setOnClickListener(new View.OnClickListener() { //DetailBeerInfoActivity를 띄우기 위한 임의 코드
             @Override
             public void onClick(View view) {
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
+                {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("네트워크 에러")
+                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+
                 Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
                 intent.putExtra(Constants.INTENT_KEY_BARCODE, "8801021213217");
                 intent.putExtra(Constants.INTENT_KEY_TEST_MODE, true);
