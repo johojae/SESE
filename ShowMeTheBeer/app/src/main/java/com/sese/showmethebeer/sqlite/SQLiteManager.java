@@ -22,6 +22,9 @@ public class SQLiteManager extends SQLiteDBOpenHelper {
         this.app = app;
     }
 
+    public void dropRatingTalbes() {
+        db.delete(TABLE_RATING, null, null);
+    }
 
     public boolean saveRating(String beerId, int rate) {
         /*if (rate < 0) {

@@ -64,6 +64,7 @@ public class HiddenMenuActivity extends AppCompatActivity {
                 boolean checked = checkBox.isChecked();
                 if (checked) {
                     sqliteMngr.updateUserGuideRead(false); //user guide보이지 않은 것처럼 reset
+                    sqliteMngr.dropRatingTalbes();
                 } else {
                     sqliteMngr.updateUserGuideRead(true); //user guide보였던 것처럼 설정
                 }
