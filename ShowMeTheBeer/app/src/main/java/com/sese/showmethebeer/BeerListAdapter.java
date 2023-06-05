@@ -22,6 +22,8 @@ public class BeerListAdapter extends BaseAdapter {
     public class ViewHolder{
         public ImageView imageView;
 
+        public View imageViewNew;
+
         public TextView textCategoryTag;
         public TextView textCategory;
 
@@ -115,6 +117,11 @@ public class BeerListAdapter extends BaseAdapter {
         String detailCategory = beerCategoryJsonParser.GetDetailCategoryName(categoryItemLists, beer.getCategoryId());
 
         SetCatImage(position, viewHolder, parentCategory, detailCategory, beer.getCountry(), beer.getAlcoholicity(), beer.getName(), beer.getThumbnail());
+
+        if(beer.getIsNew()){
+            viewHolder.imageViewNew = (View)view.findViewById(R.id.icon_id_view);
+            viewHolder.imageViewNew.setVisibility(View.VISIBLE);
+        }
 
         viewHolder.textCategory.setOnClickListener(new View.OnClickListener() {
             @Override

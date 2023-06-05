@@ -70,7 +70,6 @@ public class BeerListActivity extends FragmentActivity{
                 case MESSAGE_ID_CATEGORY_BEER_INFO:
                 case MESSAGE_ID_SEARCH_BEER_INFO:
                 case MESSAGE_ID_RECOMMEND_RATE_BEER_INFO:
-
                     for(int i = 0; i<beerList.size(); i++){
                         a.add(i, beerList.get(i));
                     }
@@ -120,6 +119,9 @@ public class BeerListActivity extends FragmentActivity{
 
                     break;
                 case MESSAGE_ID_RECOMMEND_NEW_BEER_INFO:
+                    for(int idx = 0; idx<beerList.size(); idx++){
+                        beerList.get(idx).setIsNew(true);
+                    }
                     sendData("rate", null);
                     break;
             }

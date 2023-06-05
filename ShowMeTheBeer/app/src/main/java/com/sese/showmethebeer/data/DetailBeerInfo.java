@@ -18,6 +18,8 @@ public class DetailBeerInfo extends BeerInfo {
 
     private ArrayList<DetailBeerInfo> relatedBeers;
 
+    private boolean isNew = false;
+
     //https://assets.business.veluga.kr/media/public/%E1%84%87%E1%85%A5%E1%84%83%E1%85%B3_%E1%84%8B%E1%85%A1%E1%86%AF%E1%84%85%E1%85%AE%E1%84%87%E1%85%A9%E1%84%90%E1%85%B3%E1%86%AF_1.png
     String testData = "{\"id\": \"b00033\","
             + "\"name\": \"버드와이저\","
@@ -137,4 +139,8 @@ public class DetailBeerInfo extends BeerInfo {
     public ArrayList<DetailBeerInfo> getRelatedBeersInfos() {
         return relatedBeers;
     }
+
+    public boolean getIsNew() {return isNew;}
+
+    public void setIsNew(boolean isNew) {this.isNew = isNew;}
 }

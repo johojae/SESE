@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="6dp"
     app:cardElevation="6dp"
     app:cardMaxElevation="6dp"
@@ -15,12 +16,38 @@
         android:orientation="vertical"
         android:padding="6dp">
 
+        <!--
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:id="@+id/icon_id"
             />
+            !-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:id="@+id/icon_id" />
+
+            <View
+                android:id="@+id/icon_id_view"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:visibility="gone"
+                android:background="@drawable/new_icon"/>
+        </RelativeLayout>
+
+
+
+
 
         <TextView
             android:layout_width="wrap_content"
