@@ -42,6 +42,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.os.Build;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 public class Fragment_Map extends Fragment implements MapView.CurrentLocationEventListener {
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
@@ -329,6 +335,31 @@ public class Fragment_Map extends Fragment implements MapView.CurrentLocationEve
         mapViewList.get(0).onPause();
         mapViewContainer.removeView(mapViewList.get(0));
         mapViewList.remove(0);
+
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        ObjectOutputStream oos;
+//        try {
+//            oos = new ObjectOutputStream(baos);
+//            oos.writeObject(storeDataList);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        byte[] byteArray = baos.toByteArray();
+
+        ArrayList<String> tStr = new ArrayList<String>();
+        tStr.add(String.valueOf(storeDataList.size()));
+        for(BeerStoreManager.StoreData storeData:storeDataList)
+        {
+            tStr.add(String.valueOf(storeData.distance));
+            tStr.add(storeData.place_name);
+            tStr.add(storeData.phone);
+        }
+
+        Bundle result = new Bundle();
+//        result.putByteArray("data", byteArray);
+        result.putStringArrayList("data", tStr);
+        getParentFragmentManager().setFragmentResult("storeList", result);
     }
 
     @Override

@@ -23,6 +23,8 @@ public class ViewPager2Adapter extends FragmentStateAdapter {
         {
             case 0:
                 return Fragment_Map.newInstance(position);
+            case 1:
+                return Fragment_List.newInstance(position);
             default:
                 return FragmentPractice.newInstance(position);
         }

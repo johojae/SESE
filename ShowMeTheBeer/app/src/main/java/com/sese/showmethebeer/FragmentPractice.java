@@ -34,7 +34,7 @@ public class FragmentPractice extends Fragment {
                 break;
             case 1:
             case 2:
-                resource = R.layout.test;
+                resource = R.layout.activity_beer_recommender;
                 break;
             default:
                 resource = 0;
