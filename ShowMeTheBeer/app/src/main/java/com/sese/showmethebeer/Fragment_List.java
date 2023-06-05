@@ -17,10 +17,7 @@ import net.daum.mf.map.api.MapView;
 
 public class Fragment_List extends Fragment {
     Activity activity;
-    TextView textView;
     ViewGroup textViewContainer;
-    //    ImageView imgView;
-//    ViewGroup imgViewContainer;
 
     public static Fragment_List newInstance(int number) {
         Fragment_List fp = new Fragment_List();
