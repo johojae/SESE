@@ -12,6 +12,10 @@ public class Constants {
     public static final String INTENT_KEY_CATEGORY_ID = "categoryid";
     public static final String INTENT_VAL_CATEGORY = "category";
 
+    public static final String INTENT_VAL_SEARCH = "search";
+
+    public static final String INTENT_KEY_SEARCH_TEXT = "searchtext";
+
     public static final String INTENT_VAL_RECOMMEND = "recommend";
 
     public static final String INTENT_KEY_TEST_MODE = "testmode";

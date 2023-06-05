@@ -5,13 +5,19 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.sese.showmethebeer.data.DetailBeerInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,10 +27,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BeerCategoryActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     private List<CategoryDataModel> mList;
     private CategoryItemAdapter adapter;
@@ -71,6 +77,14 @@ public class BeerCategoryActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
             @Override
             public boolean onQueryTextSubmit(String query){
+                Log.v("hojae", "search:" + query);
+
+                Intent intent = new Intent(BeerCategoryActivity.this, BeerListActivity.class);
+
+                intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_SEARCH);
+                intent.putExtra(Constants.INTENT_KEY_SEARCH_TEXT, query);
+                BeerCategoryActivity.this.startActivity(intent);
+
                 return false;
             }
 

@@ -20,7 +20,6 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:id="@+id/icon_id"
-            android:src="@drawable/beer"
             />
 
         <TextView

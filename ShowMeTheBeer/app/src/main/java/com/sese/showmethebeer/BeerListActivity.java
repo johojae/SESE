@@ -58,6 +58,8 @@ public class BeerListActivity extends FragmentActivity{
 
     private static final int MESSAGE_ID_RECOMMEND_RATE_BEER_INFO = 2;
 
+    private static final int MESSAGE_ID_SEARCH_BEER_INFO = 3;
+
     final Handler handler = new Handler(){
         @SuppressLint("HandlerLeak")
         public void handleMessage(Message msg){
@@ -65,6 +67,7 @@ public class BeerListActivity extends FragmentActivity{
 
             switch (messageId) {
                 case MESSAGE_ID_CATEGORY_BEER_INFO:
+                case MESSAGE_ID_SEARCH_BEER_INFO:
                     for(int i = 0; i<beerList.size(); i++){
                         a.add(i, beerList.get(i));
 
@@ -155,6 +158,17 @@ public class BeerListActivity extends FragmentActivity{
 
             sendData("new", null);
         }
+        else if(called_from != null && called_from.equalsIgnoreCase(Constants.INTENT_VAL_SEARCH)) {
+            String search = intent.getStringExtra(Constants.INTENT_KEY_SEARCH_TEXT);
+
+            List<CategoryItem> categoryItemLists = new ArrayList<>();
+
+            TextView title_view = (TextView) findViewById(R.id.beer_list_title);
+
+            title_view.setText("맥주 검색 결과");
+
+            sendData("search", search);
+        }
 
         pager = (ViewPager2) findViewById(R.id.pager);
         mIndicator = (CircleIndicator3) findViewById(R.id.pagerIndicator);
@@ -240,6 +254,16 @@ public class BeerListActivity extends FragmentActivity{
             }.start();
         }
 
+        if(method.equals(("search"))) {
+            new Thread() {
+                public void run() {
+                    //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
+                    App app = (App)getApplication();
+                    ServerManager manager = app.getServerMngr();
+                    manager.send(ServerManager.SUB_API_INFO_BY_SEARCH, getSearchListCallback());
+                }
+            }.start();
+        }
     }
 
     private Callback getCategoryListCallback() {
@@ -316,6 +340,36 @@ public class BeerListActivity extends FragmentActivity{
                         beerListParser.getItemList(beerList, new JSONArray((jsonData)));
 
                         handler.sendEmptyMessage(MESSAGE_ID_CATEGORY_BEER_INFO);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+            }
+        };
+    }
+
+    private Callback getSearchListCallback() {
+        return new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println("BeerListActivity::onResponse:" + response);
+                if (response.code() == 200) {
+                    // Get response
+                    String jsonData = response.body().string();
+                    System.out.println("serverUrl::" + jsonData);
+                    try {
+                        BeerListParser beerListParser = new BeerListParser();
+                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
+
+                        handler.sendEmptyMessage(MESSAGE_ID_SEARCH_BEER_INFO);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }

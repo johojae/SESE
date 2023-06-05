@@ -118,12 +118,10 @@ public class BeerListAdapter extends BaseAdapter {
 
     private void SetCatImage(int position, ViewHolder viewHolder, String parentCategory, String detailCategory, String country, String alcoholicity, String name, String url){
         if (url != null && url.length() > 0) {
-            ImageLoadTask task = new ImageLoadTask(url, viewHolder.imageView);
+            ImageLoadTask task = new ImageLoadTask(url, viewHolder.imageView, R.drawable.beer);
             task.execute();
         }
-        else {
-            viewHolder.imageView.setImageResource(R.drawable.beer);
-        }
+
         viewHolder.textCategory.setText(parentCategory +" > " + detailCategory);
         viewHolder.textCountry.setText(country);
         viewHolder.textAlcoholicity.setText(alcoholicity);
