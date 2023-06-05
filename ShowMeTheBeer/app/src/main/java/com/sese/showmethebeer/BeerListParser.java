@@ -13,9 +13,8 @@ import java.util.List;
 public class BeerListParser {
     BeerListParser(){}
 
-    void getItemList(List<DetailBeerInfo> beerList, JSONArray jsonArray){
+    void getItemList(List<DetailBeerInfo> beerList, JSONObject object) {
         try {
-            JSONObject object = jsonArray.getJSONObject(0);
             JSONArray listArray = object.getJSONArray("list");
 
 

@@ -279,7 +279,7 @@ public class BeerListActivity extends FragmentActivity{
                     System.out.println("serverUrl::" + jsonData);
                     try {
                         BeerListParser beerListParser = new BeerListParser();
-                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
+                        beerListParser.getItemList(beerList, new JSONObject(jsonData));
 
                         handler.sendEmptyMessage(MESSAGE_ID_CATEGORY_BEER_INFO);
                     } catch (JSONException e) {
@@ -309,7 +309,7 @@ public class BeerListActivity extends FragmentActivity{
                     System.out.println("serverUrl::" + jsonData);
                     try {
                         BeerListParser beerListParser = new BeerListParser();
-                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
+                        beerListParser.getItemList(beerList, new JSONObject(jsonData));
 
                         handler.sendEmptyMessage(MESSAGE_ID_RECOMMEND_NEW_BEER_INFO);
                     } catch (JSONException e) {
@@ -339,7 +339,7 @@ public class BeerListActivity extends FragmentActivity{
                     System.out.println("serverUrl::" + jsonData);
                     try {
                         BeerListParser beerListParser = new BeerListParser();
-                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
+                        beerListParser.getItemList(beerList, new JSONObject(jsonData));
 
                         handler.sendEmptyMessage(MESSAGE_ID_RECOMMEND_RATE_BEER_INFO);
                     } catch (JSONException e) {
@@ -369,7 +369,7 @@ public class BeerListActivity extends FragmentActivity{
                     System.out.println("serverUrl::" + jsonData);
                     try {
                         BeerListParser beerListParser = new BeerListParser();
-                        beerListParser.getItemList(beerList, new JSONArray((jsonData)));
+                        beerListParser.getItemList(beerList, new JSONObject(jsonData));
 
                         handler.sendEmptyMessage(MESSAGE_ID_SEARCH_BEER_INFO);
                     } catch (JSONException e) {
