@@ -255,7 +255,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             String thumbnailUrl = objDetailBeerInfo.getThumbnail();
 
             if (thumbnailUrl != null && thumbnailUrl.length() > 0) {
-                ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, beerImageView);
+                ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, beerImageView, R.drawable.app_icon);
                 task.execute();
             }
             beerNameText.setText(objDetailBeerInfo.getName());
@@ -459,7 +459,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         });
 
         if (thumbnailUrl != null && thumbnailUrl.length() > 0) {
-            ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, imgView);
+            ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, imgView, R.drawable.app_icon);
             task.execute();
         }
     }

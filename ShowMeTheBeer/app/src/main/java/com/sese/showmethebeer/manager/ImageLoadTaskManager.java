@@ -19,6 +19,13 @@ public class ImageLoadTaskManager { //사용할지 아직 고민 중
         return imgLoadTask;
     }
 
+    public ImageLoadTask createImageLoadTask(String urlStr, ImageView imageView, int defaultResourceId) {
+        ImageLoadTask imgLoadTask = new ImageLoadTask(urlStr, imageView, defaultResourceId);
+        imgLoadTaskList.add(imgLoadTask);
+
+        return imgLoadTask;
+    }
+
     public void cancelAllImageLoadTask() {
         for (int i = 0; i < imgLoadTaskList.size(); i++) {
             ImageLoadTask imgLoadTask = imgLoadTaskList.get(i);

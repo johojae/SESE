@@ -16,12 +16,19 @@ import java.util.HashMap;
 public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
     private String urlStr;
     private ImageView imageView;
+    private int defaultResourceId = -1;
     private HashMap<String, Bitmap> hashMap = new HashMap<>();
 
     // 어떤 url 로 요청할 지, 응답을 받은 후 어떤 이미지뷰에 설정할 지 전달받음
     public ImageLoadTask(String urlStr, ImageView imageView){
         this.urlStr = urlStr;
         this.imageView = imageView;
+    }
+
+    public ImageLoadTask(String urlStr, ImageView imageView, int defaultResourceId){
+        this.urlStr = urlStr;
+        this.imageView = imageView;
+		this.defaultResourceId = defaultResourceId;
     }
 
     @Override
@@ -63,8 +70,17 @@ public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
+        System.out.println("ImageLoadTask :: onPostExecute : " + bitmap + " , defaultResourceId:" + defaultResourceId);
         super.onPostExecute(bitmap);
-        imageView.setImageBitmap(bitmap);   // 비트맵을 이미지뷰에 설정
-        imageView.invalidate(); // 이미지를 다시 그림
+
+        if (bitmap !=null) {
+            imageView.setImageBitmap(bitmap);   // 비트맵을 이미지뷰에 설정
+            imageView.invalidate(); // 이미지를 다시 그림
+        } else  {
+            if (defaultResourceId > 0) {
+                imageView.setImageResource(defaultResourceId);
+                imageView.invalidate(); // 이미지를 다시 그림
+            }
+        }
     }
 }
