@@ -39,6 +39,25 @@ public class SQLiteManager extends SQLiteDBOpenHelper {
         return true;
     }
 
+    public ArrayList<String> getBeerIdsByRate(int count) { //top rate기준 count갯수
+        ArrayList<String> beerIds = new ArrayList<String>();
+        Cursor mCursor = db.rawQuery("SELECT * FROM " + TABLE_RATING + " ORDER BY " + KEY_RATING + " DESC LIMIT " + count, null);
+        String beerId = "";
+        if (mCursor.moveToFirst()) { //기존에 존재하는 경우
+            beerId =  mCursor.getString(mCursor.getColumnIndexOrThrow(KEY_BEERID));
+
+            if (beerId != null && beerId.length() > 0) {
+                beerIds.add(beerId);
+            }
+        }
+        System.out.println("getBeerIdsByRate : " + beerIds.size());
+        for (int i = 0 ; i < beerIds.size(); i++) {
+            System.out.println("getBeerIdsByRate : " + beerIds.get(i));
+        }
+        mCursor.close();
+        return beerIds;
+    }
+
     public boolean deleteBeer(String beerId) {
         db.execSQL("DELETE FROM " + TABLE_RATING + " WHERE " +  KEY_BEERID + "='" + beerId +"'");
         return true;
