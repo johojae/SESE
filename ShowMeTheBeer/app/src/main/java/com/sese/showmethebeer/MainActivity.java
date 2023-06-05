@@ -135,8 +135,13 @@ public class MainActivity extends AppCompatActivity {
         menuRecommend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), BeerRecommenderActivity.class); //TODO
-                startActivity(intent);
+                //Intent intent = new Intent(getApplicationContext(), BeerRecommenderActivity.class); //TODO
+                //startActivity(intent);
+
+                Intent intent = new Intent(MainActivity.this, BeerListActivity.class);
+
+                intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_RECOMMEND);
+                MainActivity.this.startActivity(intent);
             }
         });
 

@@ -68,6 +68,7 @@ public class BeerListActivity extends FragmentActivity{
             switch (messageId) {
                 case MESSAGE_ID_CATEGORY_BEER_INFO:
                 case MESSAGE_ID_SEARCH_BEER_INFO:
+                case MESSAGE_ID_RECOMMEND_RATE_BEER_INFO:
                     for(int i = 0; i<beerList.size(); i++){
                         a.add(i, beerList.get(i));
 
@@ -111,8 +112,6 @@ public class BeerListActivity extends FragmentActivity{
                 case MESSAGE_ID_RECOMMEND_NEW_BEER_INFO:
                     sendData("rate", null);
                     break;
-                case MESSAGE_ID_RECOMMEND_RATE_BEER_INFO:
-                    break;
             }
         }
     };
@@ -149,9 +148,7 @@ public class BeerListActivity extends FragmentActivity{
 
             sendData("category", id);
         }
-        else if(called_from != null && called_from.equalsIgnoreCase(Constants.INTENT_VAL_CATEGORY)){
-            List<CategoryItem> categoryItemLists = new ArrayList<>();
-
+        else if(called_from != null && called_from.equalsIgnoreCase(Constants.INTENT_VAL_RECOMMEND)){
             TextView title_view = (TextView) findViewById(R.id.beer_list_title);
 
             title_view.setText("추천 맥주");
@@ -160,9 +157,6 @@ public class BeerListActivity extends FragmentActivity{
         }
         else if(called_from != null && called_from.equalsIgnoreCase(Constants.INTENT_VAL_SEARCH)) {
             String search = intent.getStringExtra(Constants.INTENT_KEY_SEARCH_TEXT);
-
-            List<CategoryItem> categoryItemLists = new ArrayList<>();
-
             TextView title_view = (TextView) findViewById(R.id.beer_list_title);
 
             title_view.setText("맥주 검색 결과");
@@ -249,7 +243,11 @@ public class BeerListActivity extends FragmentActivity{
                     //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
                     App app = (App)getApplication();
                     ServerManager manager = app.getServerMngr();
-                    manager.send(ServerManager.SUB_API_INFO_BY_RECOMMEND_RATE_BEER_LIST, getRecommendRateListCallback());
+
+                    //ArrayList<String> getBeerIdsByRate(int count)
+                    String temp = "b00010;b00020;b00030;b00040;b00050";
+
+                    manager.send(ServerManager.SUB_API_INFO_BY_RECOMMEND_RATE_BEER_LIST + temp, getRecommendRateListCallback());
                 }
             }.start();
         }
@@ -309,7 +307,7 @@ public class BeerListActivity extends FragmentActivity{
                         BeerListParser beerListParser = new BeerListParser();
                         beerListParser.getItemList(beerList, new JSONArray((jsonData)));
 
-                        handler.sendEmptyMessage(MESSAGE_ID_CATEGORY_BEER_INFO);
+                        handler.sendEmptyMessage(MESSAGE_ID_RECOMMEND_NEW_BEER_INFO);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -339,7 +337,7 @@ public class BeerListActivity extends FragmentActivity{
                         BeerListParser beerListParser = new BeerListParser();
                         beerListParser.getItemList(beerList, new JSONArray((jsonData)));
 
-                        handler.sendEmptyMessage(MESSAGE_ID_CATEGORY_BEER_INFO);
+                        handler.sendEmptyMessage(MESSAGE_ID_RECOMMEND_RATE_BEER_INFO);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
