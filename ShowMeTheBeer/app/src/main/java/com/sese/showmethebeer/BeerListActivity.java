@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -72,6 +73,10 @@ public class BeerListActivity extends FragmentActivity{
 
                     for(int i = 0; i<beerList.size(); i++){
                         a.add(i, beerList.get(i));
+                    }
+
+                    if(a.size() == 0){
+                        Toast.makeText(BeerListActivity.this, "아이템이 비어있습니다", Toast.LENGTH_SHORT).show(); //TODO
                     }
 
                     Iterator<DetailBeerInfo> it = a.iterator();
