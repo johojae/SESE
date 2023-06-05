@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Intent intent = new Intent(getApplicationContext(), BeerStoreManagerActivity.class);
                 Intent intent = new Intent(getApplicationContext(), BeerStoreViewpagerManagerActivity.class);
+                //Intent intent = new Intent(getApplicationContext(), BeerStoreActivity.class);
                 startActivity(intent);
             }
         });

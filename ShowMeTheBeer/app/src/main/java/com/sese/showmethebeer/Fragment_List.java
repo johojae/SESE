@@ -1,5 +1,6 @@
 package com.sese.showmethebeer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,8 +17,10 @@ import net.daum.mf.map.api.MapView;
 
 public class Fragment_List extends Fragment {
     Activity activity;
-    ImageView imgView;
-    ViewGroup imgViewContainer;
+    TextView textView;
+    ViewGroup textViewContainer;
+    //    ImageView imgView;
+//    ViewGroup imgViewContainer;
 
     public static Fragment_List newInstance(int number) {
         Fragment_List fp = new Fragment_List();
@@ -32,16 +35,42 @@ public class Fragment_List extends Fragment {
         activity = getActivity();
     }
 
+    @SuppressLint("WrongViewCast")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.test , container, false);
-        imgView = new ImageView(activity);
+        textView = new TextView(activity);
 
-//        imgViewContainer = (ViewGroup) view.findViewById(R.id.imageView);
-//        imgViewContainer.addView(imgView);
+        textViewContainer = (ViewGroup) view.findViewById(R.id.textView);
+        textViewContainer.addView(textView);
+//
+//        textView.setText();
+//
+//        textViewContainer = (ViewGroup) view.findViewById(R.id.textView);
+//
+//        TextView textView;
+//        ViewGroup textViewContainer;
+//
+//
+//
+//        imgView = new ImageView(activity);
+//
+//        imgViewContainer = (ViewGroup) view.findViewById(R.id.textView.imageView);
+////        imgViewContainer.addView(imgView);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //textView.onR.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }
