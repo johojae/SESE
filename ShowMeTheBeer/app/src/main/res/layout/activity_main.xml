@@ -36,21 +36,17 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <TextView
-                android:paddingLeft="20dp"
-                android:layout_marginTop="85dp"
-                android:id="@+id/beerSearchText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="맥주이름으로 검색해보세요!"/>
+
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/beerSearchView"
-                android:layout_toRightOf="@id/beerSearchText"
                 android:layout_marginTop="70dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:queryHint="맥주이름으로 검색해보세요!"
+                android:iconifiedByDefault="false"
+                app:iconifiedByDefault="false"
                 app:layout_constraintTop_toTopOf="parent"/>
         </RelativeLayout>
         <ImageView
