@@ -24,15 +24,10 @@ public class BeerListAdapter extends BaseAdapter {
 
     public class ViewHolder{
         public ImageView imageView;
-
         public View imageViewNew;
-
-        public TextView textCategoryTag;
         public TextView textCategory;
-
         public TextView textCountry;
         public TextView textName;
-
         public TextView textAlcoholicity;
     }
 
@@ -89,18 +84,13 @@ public class BeerListAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.grid_view_beer_item_list, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.imageView = (ImageView) view.findViewById(R.id.icon_id);
-            viewHolder.textCategoryTag = (TextView) view.findViewById(R.id.grid_beer_category_tag);
             viewHolder.textCategory = (TextView) view.findViewById(R.id.grid_beer_category);
             viewHolder.textCountry = (TextView) view.findViewById(R.id.grid_beer_country);
             viewHolder.textAlcoholicity = (TextView) view.findViewById(R.id.grid_beer_alcoholicity);
             viewHolder.textName = (TextView) view.findViewById(R.id.grid_beer_name);
 
-            viewHolder.textCategoryTag.setVisibility(View.GONE);
-
             if(isCategory == true)
             {
-                viewHolder.textCategoryTag.setVisibility(View.INVISIBLE);
-                viewHolder.textCategoryTag.setVisibility(View.GONE);
                 viewHolder.textCategory.setVisibility(View.INVISIBLE);
                 viewHolder.textCategory.setVisibility(View.GONE);
             }
