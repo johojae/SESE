@@ -474,10 +474,11 @@ public class BeerListActivity extends FragmentActivity{
                     finish(); //activity 종료시킴
                 }
             });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+
     }
 
     private Callback getBeerinfoListByIdCallback() {
