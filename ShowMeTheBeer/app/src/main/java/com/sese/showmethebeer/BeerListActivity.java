@@ -1,7 +1,9 @@
 package com.sese.showmethebeer;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
@@ -23,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.sese.showmethebeer.data.DetailBeerInfo;
+import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 import com.sese.showmethebeer.serverConn.ServerManager;
 import com.sese.showmethebeer.sqlite.SQLiteManager;
 
@@ -59,6 +62,10 @@ public class BeerListActivity extends FragmentActivity{
     private static final int MESSAGE_ID_RECOMMEND_RATE_BEER_INFO = 2;
 
     private static final int MESSAGE_ID_SEARCH_BEER_INFO = 3;
+
+    private static final int MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER = 100;
+    private static final int MESSAGE_ID_DIALOG_ERROR_OTHERS = 101;
+
 
     final Handler handler = new Handler(){
         @SuppressLint("HandlerLeak")
@@ -119,6 +126,10 @@ public class BeerListActivity extends FragmentActivity{
                     break;
                 case MESSAGE_ID_RECOMMEND_NEW_BEER_INFO:
                     sendData("rate", null);
+                    break;
+                case MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER:
+                case MESSAGE_ID_DIALOG_ERROR_OTHERS:
+                    showErrorDialog(messageId);
                     break;
             }
         }
@@ -405,6 +416,29 @@ public class BeerListActivity extends FragmentActivity{
                 System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
             }
         };
+    }
+
+    private void showErrorDialog(int messageIdErrDialog) { //에러 발생
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.dialog_error_title);
+
+        if (messageIdErrDialog == MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER) {
+            Toast.makeText(BeerListActivity.this, "아이템이 비어있습니다", Toast.LENGTH_SHORT).show(); //TODO
+        }
+        else {
+            builder.setMessage(R.string.dialog_error_server_error);
+
+            builder.setPositiveButton(R.string.text_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish(); //activity 종료시킴
+                }
+            });
+        }
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }
