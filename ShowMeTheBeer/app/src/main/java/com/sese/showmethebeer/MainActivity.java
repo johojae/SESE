@@ -147,16 +147,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this))
                 {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("네트워크 에러")
-                            .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .create()
-                            .show();
+					showNoNetworkDialog();
                     return;
                 }
 
@@ -249,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(MainActivity.this)
             .setTitle("네트워크 에러")
             .setMessage("네트워크가 연결 된 이후에 재시도 해주세요.")
-            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            .setPositiveButton(R.string.text_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                 }

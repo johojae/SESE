@@ -12,11 +12,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeerStoreManager2 extends AsyncTask<String, Void, List<BeerStoreManager.StoreData>>{
+public class BeerStoreManagerAsyncTask extends AsyncTask<String, Void, List<BeerStoreManager.StoreData>>{
     double latitude, longitude;
     int radius;
 
-    BeerStoreManager2(double _latitude, double _longitude, int _radius)
+    BeerStoreManagerAsyncTask(double _latitude, double _longitude, int _radius)
     {
         latitude = _latitude;
         longitude = _longitude;

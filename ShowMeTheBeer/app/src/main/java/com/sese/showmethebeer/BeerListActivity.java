@@ -8,7 +8,6 @@ import android.os.Bundle;
 //import android.support.v4.app.FragmentActivity;
 //import android.support.v4.app.FragmentManager;
 //import android.support.v4.view.PagerAdapter;
-import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -24,11 +23,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.sese.showmethebeer.data.DetailBeerInfo;
-import com.sese.showmethebeer.manager.DetailBeerInfoHelper;
 import com.sese.showmethebeer.serverConn.ServerManager;
 import com.sese.showmethebeer.sqlite.SQLiteManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -284,7 +281,7 @@ public class BeerListActivity extends FragmentActivity{
                     //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
                     App app = (App)getApplication();
                     ServerManager manager = app.getServerMngr();
-                    manager.send(ServerManager.SUB_API_INFO_BY_SEARCH, getSearchListCallback());
+                    manager.send(ServerManager.SUB_API_INFO_BY_SEARCH + parameter, getSearchListCallback());
                 }
             }.start();
         }
