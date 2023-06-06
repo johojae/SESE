@@ -118,7 +118,9 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_beer_info);
-        getSupportActionBar().setTitle("맥주 정보");
+
+        TextView title = (TextView) findViewById(R.id.detail_title);
+        title.setText("맥주 정보");
 
         ImageButton button = (ImageButton) findViewById(R.id.detail_home_button);
         button.setOnClickListener(new View.OnClickListener() {
