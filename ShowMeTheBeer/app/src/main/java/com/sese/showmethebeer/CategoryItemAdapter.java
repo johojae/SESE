@@ -1,6 +1,7 @@
 package com.sese.showmethebeer;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,6 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-
         CategoryDataModel model = mList.get(position);
         holder.mTextView.setText(model.getItemText());
 
@@ -46,7 +46,7 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapte
             holder.mArrowImage.setImageResource(R.drawable.arrow_down);
         }
 
-        CategoryNestedAdapter adapter = new CategoryNestedAdapter(list, model.getItemText());
+        CategoryNestedAdapter adapter = new CategoryNestedAdapter(model.getNestedList(), model.getItemText());
         holder.nestedRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.nestedRecyclerView.setHasFixedSize(true);
         holder.nestedRecyclerView.setAdapter(adapter);
