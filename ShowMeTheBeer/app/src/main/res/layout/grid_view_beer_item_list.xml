@@ -36,6 +36,21 @@
                 android:layout_gravity="center"
                 android:id="@+id/icon_id" />
 
+            <TextView
+                android:id="@+id/grid_beer_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="4dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:textColor="#C3950D"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
             <View
                 android:id="@+id/icon_id_view"
                 android:layout_width="50dp"
@@ -45,10 +60,6 @@
                 android:visibility="gone"
                 android:background="@drawable/new_icon"/>
         </RelativeLayout>
-
-
-
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -83,22 +94,26 @@
                     android:linksClickable="true" />
             </TableRow>
 
-            <TableRow
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/grid_beer_country"
-                    android:textStyle="bold"
-                    android:textSize="10sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/grid_beer_alcoholicity"
-                    android:textStyle="bold"
-                    android:textSize="10sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/grid_beer_country"
+                        android:textStyle="bold"
+                        android:textSize="10sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/grid_beer_alcoholicity"
+                        android:textStyle="bold"
+                        android:textSize="10sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </TableRow>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </TableLayout>
 
     </LinearLayout>

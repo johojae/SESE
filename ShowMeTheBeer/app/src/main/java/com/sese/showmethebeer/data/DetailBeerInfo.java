@@ -1,5 +1,4 @@
 package com.sese.showmethebeer.data;
-
 import com.sese.showmethebeer.Constants;
 
 import org.json.JSONArray;
@@ -7,8 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class DetailBeerInfo extends BeerInfo {
-
+public class DetailBeerInfo extends BeerInfo implements Comparable<DetailBeerInfo> {
     private String manufacturer;
     private String alcoholicity;
     private int carbonicAcidLevel = -1;
@@ -136,5 +134,31 @@ public class DetailBeerInfo extends BeerInfo {
 
     public ArrayList<DetailBeerInfo> getRelatedBeersInfos() {
         return relatedBeers;
+    }
+
+    public boolean getIsNew() {return isNew;}
+
+    public void setIsNew(boolean isNew) {this.isNew = isNew;}
+
+    private int rate = -1;
+
+    public void setUserRating(int rate)
+    {
+        this.rate = rate;
+    }
+
+    public int getUserRating()
+    {
+        return rate;
+    }
+
+    @Override
+    public int compareTo(DetailBeerInfo data) {
+        if (data.rate < rate) {
+            return -1;
+        } else if (data.rate > rate) {
+            return 1;
+        }
+        return 0;
     }
 }

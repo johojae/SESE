@@ -6,13 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
-//import android.support.v4.app.FragmentManager;
-//import android.support.v4.view.PagerAdapter;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,9 +21,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.sese.showmethebeer.data.DetailBeerInfo;
-import com.sese.showmethebeer.manager.NetworkConnectionUtil;
 import com.sese.showmethebeer.serverConn.ServerManager;
 import com.sese.showmethebeer.sqlite.SQLiteManager;
+import com.sese.showmethebeer.data.UserBeerInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +35,7 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,6 +49,10 @@ public class BeerListActivity extends FragmentActivity{
     Context context;
 
     List<DetailBeerInfo> beerList;
+    List<UserBeerInfo> userBeerInfoList;
+
+    boolean isUserInfo = false;
+    boolean userInfoUpdateRequest = false;
 
     ArrayList<DetailBeerInfo> a;
 
@@ -62,6 +63,7 @@ public class BeerListActivity extends FragmentActivity{
     private static final int MESSAGE_ID_RECOMMEND_RATE_BEER_INFO = 2;
 
     private static final int MESSAGE_ID_SEARCH_BEER_INFO = 3;
+    private static final int MESSAGE_ID_BEER_INFO_ID_INFO = 4;
 
     private static final int MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER = 100;
     private static final int MESSAGE_ID_DIALOG_ERROR_OTHERS = 101;
@@ -80,6 +82,7 @@ public class BeerListActivity extends FragmentActivity{
                         a.add(i, beerList.get(i));
                     }
 
+                case MESSAGE_ID_BEER_INFO_ID_INFO:
                     if(a.size() == 0){
                         Toast.makeText(BeerListActivity.this, "아이템이 비어있습니다", Toast.LENGTH_SHORT).show(); //TODO
                     }
@@ -157,6 +160,7 @@ public class BeerListActivity extends FragmentActivity{
         Intent intent = getIntent();
 
         beerList = new ArrayList<>();
+        userBeerInfoList = new ArrayList<>();
         a = new ArrayList<DetailBeerInfo>();
 
         String called_from = intent.getStringExtra(Constants.INTENT_KEY_CALLER);
@@ -193,6 +197,28 @@ public class BeerListActivity extends FragmentActivity{
 
             sendData("search", search);
         }
+        else if(called_from != null && called_from.equalsIgnoreCase(Constants.INTENT_VAL_USER_INFO)) {
+            isUserInfo = true;
+
+            TextView title_view = (TextView) findViewById(R.id.beer_list_title);
+            title_view.setText("My Beers!");
+
+            userBeerInfoList.addAll(sqLiteManager.getUserBeerList());
+
+            String beerInfoSearchParameterById = new String();
+
+            boolean firstFlag = true;
+            for(UserBeerInfo userBeerInfo:userBeerInfoList)
+            {
+                if(firstFlag)
+                    firstFlag = false;
+                else
+                    beerInfoSearchParameterById += ";";
+                beerInfoSearchParameterById += userBeerInfo.getBeerId();
+            }
+
+            sendData("beerinfo/id", beerInfoSearchParameterById);
+        }
 
         pager = (ViewPager2) findViewById(R.id.pager);
         mIndicator = (CircleIndicator3) findViewById(R.id.pagerIndicator);
@@ -221,8 +247,6 @@ public class BeerListActivity extends FragmentActivity{
         public int getItemCount() {
             return this.fragments.size();
         }
-
-
 
         /*
         public PagerAdapter(FragmentManager fm, List<GridFragment> fragments){
@@ -293,6 +317,17 @@ public class BeerListActivity extends FragmentActivity{
                     App app = (App)getApplication();
                     ServerManager manager = app.getServerMngr();
                     manager.send(ServerManager.SUB_API_INFO_BY_SEARCH + parameter, getSearchListCallback());
+                }
+            }.start();
+        }
+
+        if(method.equals(("beerinfo/id"))) {
+            new Thread() {
+                public void run() {
+                    //파라미터 2개와 미리정의해논 콜백함수를 매개변수로 전달하여 호출
+                    App app = (App)getApplication();
+                    ServerManager manager = app.getServerMngr();
+                    manager.send(ServerManager.SUB_API_INFO_BY_BEER_ID + parameter, getBeerinfoListByIdCallback());
                 }
             }.start();
         }
@@ -441,4 +476,85 @@ public class BeerListActivity extends FragmentActivity{
         alertDialog.show();
     }
 
+    private Callback getBeerinfoListByIdCallback() {
+        return new Callback() {
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println("BeerListActivity::onResponse:" + response);
+                if (response.code() == 200) {
+                    // Get response
+                    String jsonData = response.body().string();
+                    System.out.println("serverUrl::" + jsonData);
+                    try {
+                        BeerListParser beerListParser = new BeerListParser();
+                        beerListParser.getItemList(beerList, new JSONObject(jsonData));
+
+                        for(DetailBeerInfo beerInfo:beerList)
+                        {
+                            for(UserBeerInfo userBeerInfo:userBeerInfoList)
+                            {
+                                if(beerInfo.getBeerId().equals(userBeerInfo.getBeerId())) {
+                                    beerInfo.setUserRating(userBeerInfo.getRating());
+                                    break;
+                                }
+                            }
+                        }
+                        Collections.sort(beerList);
+                        a.clear();
+                        a.addAll(beerList);
+
+                        handler.sendEmptyMessage(MESSAGE_ID_BEER_INFO_ID_INFO);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+            }
+        };
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isUserInfo)
+        {
+            if(userInfoUpdateRequest) {
+                List<UserBeerInfo> userBeerInfoList = new ArrayList<>();
+
+                Intent intent = getIntent();
+
+                userBeerInfoList.addAll(sqLiteManager.getUserBeerList());
+
+                if(userBeerInfoList.equals(this.userBeerInfoList))
+                    return;
+
+                beerList.clear();
+                this.userBeerInfoList.clear();
+                this.userBeerInfoList.addAll(userBeerInfoList);
+
+                for(int i = 0; i < pager.getAdapter().getItemCount(); i++)
+                    pager.getAdapter().notifyItemRemoved(i);
+                pager.getAdapter().notifyItemRangeRemoved(0,pager.getAdapter().getItemCount());
+
+                String beerInfoSearchParameterById = new String();
+
+                boolean firstFlag = true;
+                for(UserBeerInfo userBeerInfo:userBeerInfoList)
+                {
+                    if(firstFlag)
+                        firstFlag = false;
+                    else
+                        beerInfoSearchParameterById += ";";
+                    beerInfoSearchParameterById += userBeerInfo.getBeerId();
+                }
+
+                sendData("beerinfo/id", beerInfoSearchParameterById);
+            }
+            userInfoUpdateRequest = true;
+        }
+    }
 }

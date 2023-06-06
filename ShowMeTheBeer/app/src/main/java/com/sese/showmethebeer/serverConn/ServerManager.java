@@ -41,7 +41,7 @@ public class ServerManager {
     public ServerManager(App app, Context context) {
         this.app = app;
         this.context = context;
-        ipAddr = "http://192.168.1.12:4000"; //app.getSQLiteManager().getServerIpAddress(); //ex, 192.168.0.10:1234
+        ipAddr = "http://192.168.1.7:8443"; //app.getSQLiteManager().getServerIpAddress(); //ex, 192.168.0.10:1234
 
         SQLiteManager sqLiteManager = app.getSQLiteManager();
         String dbIpAddr = sqLiteManager.getServerIpAddress();
