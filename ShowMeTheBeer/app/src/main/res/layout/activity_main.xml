@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:queryHint="맥주이름으로 검색해보세요!"
+                app:queryHint="맥주 이름으로 검색해 보세요!"
                 android:iconifiedByDefault="false"
                 app:iconifiedByDefault="false"
                 app:layout_constraintTop_toTopOf="parent"/>
