@@ -136,10 +136,6 @@ public class DetailBeerInfo extends BeerInfo implements Comparable<DetailBeerInf
         return relatedBeers;
     }
 
-    public boolean getIsNew() {return isNew;}
-
-    public void setIsNew(boolean isNew) {this.isNew = isNew;}
-
     private int rate = -1;
 
     public void setUserRating(int rate)

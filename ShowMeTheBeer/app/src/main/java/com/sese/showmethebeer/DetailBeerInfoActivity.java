@@ -231,8 +231,12 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
     private void clearBitMap(ImageView iv) {
         Log.i(Constants.TAG, "clearBitMap");
+        if (iv == null) {
+            return;
+        }
+
         Drawable d = iv.getDrawable();
-        if (d instanceof BitmapDrawable) {
+        if (d != null && d instanceof BitmapDrawable) {
             Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
             bitmap.recycle();
             bitmap = null;
@@ -427,11 +431,15 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         }
 
         int rating = sqLiteManager.getRating(objDetailBeerInfo.getBeerId());
-
+        Log.i(Constants.TAG, "handleBookMarkAndRatingView" + (rating/2));
         if (rating != -1) { //-1이면, DB에 없음, nothing to do
             markingState_marked = true;
             bookMark.setImageResource(R.drawable.book_marked);
-            ratingBar.setRating(rating/2);
+            float rateVal = (rating/2);
+            if (rating % 2 == 1) {
+                rateVal += 0.5;
+            }
+            ratingBar.setRating(rateVal);
         } else {
             markingState_marked = false;
             bookMark.setImageResource(R.drawable.book_unmarked);
