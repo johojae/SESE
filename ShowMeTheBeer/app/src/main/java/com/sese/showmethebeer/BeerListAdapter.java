@@ -122,7 +122,7 @@ public class BeerListAdapter extends BaseAdapter {
         viewHolder.textCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //beerList activity ÎùÑÏö∞Í∏∞ TODO
+                //beerList activity ∂ÁøÏ±‚ TODO
                 Intent intent = new Intent(view.getContext(), BeerListActivity.class);
                 intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_CATEGORY);
                 intent.putExtra(Constants.INTENT_KEY_CATEGORY_ID, beer.getCategoryId());

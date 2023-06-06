@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pager_white_rect">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5pt"
+        android:layout_marginStart="5pt"
+        android:layout_marginEnd="5pt"
+        android:layout_marginBottom="5pt">
+        <TextView
+            android:id="@+id/custom_callout_balloon_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textStyle="bold"/>
+
+        <TableLayout
+            android:id="@+id/custom_callout_table_layout"
+            android:layout_width= "wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/custom_callout_balloon_name">
+        <TableRow
+            android:id= "@+id/categoryNameRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="카테고리 |" />
+            <TextView
+                android:id="@+id/categoryNameTextView"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            android:id= "@+id/phoneNumberRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="전화번호 |"
+                android:linksClickable="true"
+                android:autoLink = "phone"/>
+            <TextView
+                android:id="@+id/phoneNumberTextView"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            android:id= "@+id/addressRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="주소 |" />
+
+            <TextView
+                android:id="@+id/addressTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            android:id= "@+id/linkRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="링크 |" />
+            <TextView
+                android:id="@+id/linkTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:linksClickable="true"
+                android:autoLink = "web"/>
+        </TableRow>
+        </TableLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

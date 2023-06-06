@@ -1,11 +1,21 @@
 package com.sese.showmethebeer;
 
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 
 
+import net.daum.mf.map.api.CalloutBalloonAdapter;
 import net.daum.mf.map.api.MapView;
 
 import android.Manifest;
@@ -16,6 +26,8 @@ import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.daum.mf.map.api.MapPoint;
@@ -30,160 +42,348 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.os.Build;
-public class BeerStoreManagerActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener {
-    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
-    private static final int PERMISSIONS_REQUEST_CODE = 100;
-    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-    String APIKey = "c902cfe962c6fe2b91572930b36db204";
-    private MapView mapView;
+public class BeerStoreManagerActivity extends AppCompatActivity implements  MapView.CurrentLocationEventListener, MapView.POIItemEventListener{
 
-    boolean firstMapShow;
-    private final String TAG = this.getClass().getSimpleName().trim().substring(0,22);
-    List<BeerStoreManager.StoreData> storeDataList = new ArrayList<BeerStoreManager.StoreData>();
+    ViewGroup mMapViewContainer;
+    private MapView mMapView;
+
+    static boolean firstMapShow;
+    static boolean initMapShow = true;
+
+    private static final int GPS_ENABLE_REQUEST_CODE=2001;
+    private static final int PERMISSIONS_REQUEST_CODE=100;
+    String[]REQUIRED_PERMISSIONS={Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
+//    private final String TAG = this.getClass().getSimpleName().trim().substring(0,22);
+    List<BeerStoreManager.StoreData>storeDataList = new ArrayList<BeerStoreManager.StoreData>();
+    View view;
+    private static final int MESSAGE_ID_SHOW_CUSTOM_DIALOG = 0;
+
+    final Handler handler = new Handler() {
+        @SuppressLint("HandlerLeak")
+        public void handleMessage(Message msg){
+            int messageId = msg.what;
+            switch (messageId) {
+                case MESSAGE_ID_SHOW_CUSTOM_DIALOG:
+                    showCustomDialog((MapPOIItem)(msg.obj));
+                    break;
+            }
+        }
+    };
+
+    List<MapPoint> mapPointList=new ArrayList<MapPoint>();
+
+    /*class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
+        private final View mCalloutBalloon;
+
+        public CustomCalloutBalloonAdapter() {
+            mCalloutBalloon = getLayoutInflater().inflate(R.layout.custom_callout_balloon, null);
+            Log.i(Constants.TAG, "CustomCalloutBalloonAdapter::" + mCalloutBalloon);
+        }
+
+        @Override
+        public View getCalloutBalloon(MapPOIItem poiItem) {
+            Log.i(Constants.TAG, "CustomCalloutBalloonAdapter::getCalloutBalloon : " + poiItem);
+
+            BeerStoreManager.StoreData storeData  = (BeerStoreManager.StoreData)poiItem.getUserObject();
+
+            ((TextView) mCalloutBalloon.findViewById(R.id.custom_callout_balloon_name)).setText(storeData.place_name);
+
+            if (storeData.category_name != null && storeData.category_name.length() > 0) {
+                ((TextView) mCalloutBalloon.findViewById(R.id.categoryNameTextView)).setText(storeData.category_name);
+            } else {
+                mCalloutBalloon.findViewById(R.id.categoryNameRow).setVisibility(View.GONE);
+            }
+
+            if (storeData.phone != null && storeData.phone.length() > 0) {
+                ((TextView) mCalloutBalloon.findViewById(R.id.phoneNumberTextView)).setText(storeData.phone);
+            } else {
+                mCalloutBalloon.findViewById(R.id.phoneNumberRow).setVisibility(View.GONE);
+            }
+
+            if (storeData.road_address_name != null && storeData.road_address_name.length() > 0) {
+                ((TextView) mCalloutBalloon.findViewById(R.id.addressTextView)).setText(storeData.road_address_name);
+            } else {
+                mCalloutBalloon.findViewById(R.id.addressRow).setVisibility(View.GONE);
+            }
+
+            if (storeData.place_url != null && storeData.place_url.length() > 0) {
+                TextView linkTextView = ((TextView) mCalloutBalloon.findViewById(R.id.linkTextView));
+                linkTextView.setText(storeData.place_url);
+
+                linkTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(storeData.place_url));
+                        startActivity(myIntent);
+                    }
+                });
+            } else {
+                mCalloutBalloon.findViewById(R.id.linkRow).setVisibility(View.GONE);
+
+            }
+            return mCalloutBalloon;
+        }
+
+        @Override
+        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
+            Log.i(Constants.TAG, "CustomCalloutBalloonAdapter::getPressedCalloutBalloon : " + poiItem);
+            return null;
+        }
+    }*/
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beer_store_manager);
+        System.out.println("BeerStoreManagerActivity");
 
-        mapView = new MapView(this);
+        setContentView(R.layout.activity_beer_store_manager_act);
+        mMapView = new MapView(this);
+        mMapViewContainer = findViewById(R.id.map_mv_mapcontainer);
 
+        mMapView.setZoomLevel(2, true);
+
+        mMapView.setCurrentLocationEventListener(this);
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
+        //mMapView.setPOIItemEventListener(this);
+
+        firstMapShow = true;
+        mMapViewContainer.addView(mMapView);
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (!isPermissionGranted()){
             showDialogForLocationServiceSetting();}
-        else{
+        else {
             checkRunTimePermission();
         }
-
-        MapPoint currentMapPoint;
-        try {
-            BeerStoreManager3 beerStoreManager3 = new BeerStoreManager3(this);
-
-            double latitude = beerStoreManager3.getLatitude();
-            double longitude = beerStoreManager3.getLongitude();
-            currentMapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
-            mapView.setMapCenterPoint(currentMapPoint, true);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            currentMapPoint = mapView.getMapCenterPoint();
-        }
-
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        mapView.setZoomLevel(2, true);
-        mapViewContainer.addView(mapView);
-
-        try {
-            storeDataList.addAll(new BeerStoreManager2(currentMapPoint.getMapPointGeoCoord().latitude, currentMapPoint.getMapPointGeoCoord().longitude, 20000).execute().get());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        for (BeerStoreManager.StoreData storeData:storeDataList) {
-            Log.d(TAG, "storeData => " + storeData.logString());
-            MapMarker(mapView, storeData.place_name, Integer.toString(storeData.distance), storeData.lng, storeData.lat);
-        }
     }
 
-    // 현재 위치 업데이트 setCurrentLocationEventListener
-    //@Override
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(@Nullable Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+        System.out.println("onPOIItemSelected -- send Handler");
+        Message message = Message.obtain();
+        message.what = MESSAGE_ID_SHOW_CUSTOM_DIALOG;
+        message.obj = mapPOIItem;
+        handler.sendMessage(message);
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+        System.out.println("onCalloutBalloonOfPOIItemTouched");
+
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+        System.out.println("onCalloutBalloonOfPOIItemTouched -->> long");
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+        System.out.println("onDraggablePOIItemMoved");
+
+    }
+
+   private void showCustomDialog(MapPOIItem poiItem) {
+        StoreManagerDialog octDialog = new StoreManagerDialog(BeerStoreManagerActivity.this, poiItem, new StoreManagerDialogClickListener() {
+            @Override
+            public void onAddressClick() {
+            }
+
+            @Override
+            public void onUrlClicked() {
+            }
+        });
+        octDialog.setCanceledOnTouchOutside(true);
+        octDialog.setCancelable(true);
+        octDialog.getWindow().setGravity(Gravity.CENTER);
+        //octDialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        octDialog.show();
+    }
+    MapPoint lastMapPoint;
+
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
-        Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
+        //Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
 
-        //이 좌표로 지도 중심 이동
-        if(firstMapShow)
-            mapView.setMapCenterPoint(currentMapPoint, true);
-
-        firstMapShow = false;
-
-        //전역변수로 현재 좌표 저장
+        // 현재 좌표 저장
         double mCurrentLat = mapPointGeo.latitude;
         double mCurrentLng = mapPointGeo.longitude;
-        Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
 
-        MapPoint.GeoCoordinate centerPt = mapView.getMapCenterPoint().getMapPointGeoCoord();
-        mCurrentLat = centerPt.latitude;
-        mCurrentLng = centerPt.longitude;
-        Log.d(TAG, "지도위치 => " + mCurrentLat + "  " + mCurrentLng);
+        System.out.println("firstMapShow:" + firstMapShow + ", initMapShow: " + initMapShow + " , " + lastMapPoint);
+        //이 좌표로 지도 중심 이동
+        if (firstMapShow) {
+            if (initMapShow) {
+                mapPointList.add(currentMapPoint);
+                mapView.setMapCenterPoint(currentMapPoint, true);
+            } else
+                if (lastMapPoint == null) {
+                    mapPointList.add(currentMapPoint);
+                    mapView.setMapCenterPoint(currentMapPoint, true);
+                } else {
+                    mapView.setMapCenterPoint(lastMapPoint, true);
+                }
 
-        String resultText = "[NULL]";
+                List<BeerStoreManager.StoreData> tempList = new ArrayList<BeerStoreManager.StoreData>();
 
-        try {
-           // resultText = new BeerStoreManager2(mCurrentLat, mCurrentLng, 10000).execute().get();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+                try {
+                    tempList.addAll(new BeerStoreManager2(mCurrentLat, mCurrentLng, 20000).execute().get());
+                    tempList.removeAll(storeDataList);
+                    storeDataList.addAll(tempList);
+                    int idx = 0;
+                    for (BeerStoreManager.StoreData storeData : storeDataList) {
+                        MapMarker(mapView, storeData);
+                        idx = idx + 1;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
-        Log.d(TAG, "resultText => " + resultText);
+            lastMapPoint = mapView.getMapCenterPoint();
 
-        try {
-            storeDataList.addAll(new BeerStoreManager().makeStoreList(resultText));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+            MapPoint.GeoCoordinate centerPt = lastMapPoint.getMapPointGeoCoord();
+            mCurrentLat = centerPt.latitude;
+            mCurrentLng = centerPt.longitude;
 
-        int idx = 0;
-        for (BeerStoreManager.StoreData storeData:storeDataList) {
-            Log.d(TAG, "storeData => " + storeData.logString());
-                MapMarker(mapView, "MapMarker", "test", storeData.lng, storeData.lat);
-            idx = idx + 1;
-        }
+            double distance = getDistance(mapPointGeo.latitude, mapPointGeo.longitude, centerPt.latitude, centerPt.longitude);
 
+            if (distance < 1500) {
+                boolean addFlag = true;
 
+                for (MapPoint mp : mapPointList) {
+                    if (getDistance(mp.getMapPointGeoCoord().latitude, mp.getMapPointGeoCoord().longitude, centerPt.latitude, centerPt.longitude) < 300)
+                        addFlag = false;
+                }
 
+                if (addFlag) {
+                    mapPointList.add(lastMapPoint);
+
+                    List<BeerStoreManager.StoreData> tempList = new ArrayList<BeerStoreManager.StoreData>();
+
+                    int sizeOfPoolOri, sizeOfPoolFin, sizeOfTemp, sizeOfSame;
+
+                    try {
+                        sizeOfPoolOri = storeDataList.size();
+
+                        tempList.addAll(new BeerStoreManager2(mCurrentLat, mCurrentLng, 20000).execute().get());
+
+                        sizeOfTemp = tempList.size();
+
+                        tempList.removeAll(storeDataList);
+
+                        sizeOfSame = sizeOfTemp - tempList.size();
+
+                        storeDataList.addAll(tempList);
+
+                        sizeOfPoolFin = storeDataList.size();
+
+                        int idx = 0;
+                        for (BeerStoreManager.StoreData storeData : tempList) {
+                            //Log.d(TAG, "storeData => " + storeData.logString());
+                            MapMarker(mapView, storeData);
+                            idx = idx + 1;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        firstMapShow = false;
+        initMapShow = false;
     }
 
-    //@Override
+    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double d = 6371 * c * 1000;    // Distance in m
+        return d;
+    }
+
     public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
 
     }
 
     //@Override
     public void onCurrentLocationUpdateFailed(MapView mapView) {
-        Log.i(TAG, "onCurrentLocationUpdateFailed");
+//        Log.i(TAG, "onCurrentLocationUpdateFailed");
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
     }
 
     //@Override
     public void onCurrentLocationUpdateCancelled(MapView mapView) {
-        Log.i(TAG, "onCurrentLocationUpdateCancelled");
+//        Log.i(TAG, "onCurrentLocationUpdateCancelled");
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
     }
 
     void checkRunTimePermission() {
-        int hasFineLocationPermission = ContextCompat.checkSelfPermission(BeerStoreManagerActivity.this,Manifest.permission.ACCESS_FINE_LOCATION);
-        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED){
-            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
-        }else{
-            if(ActivityCompat.shouldShowRequestPermissionRationale(BeerStoreManagerActivity.this,REQUIRED_PERMISSIONS[0])){
-                Toast.makeText(BeerStoreManagerActivity.this,"이 앱을 실행하려면 위치 접근 권한이 필요합니다.",Toast.LENGTH_LONG).show();
-                ActivityCompat.requestPermissions(BeerStoreManagerActivity.this,REQUIRED_PERMISSIONS,PERMISSIONS_REQUEST_CODE);
-            }else{
-                ActivityCompat.requestPermissions(BeerStoreManagerActivity.this,REQUIRED_PERMISSIONS,PERMISSIONS_REQUEST_CODE);
+        int hasFineLocationPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED) {
+            mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
+
+            final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            if (!manager.isProviderEnabled( LocationManager.GPS_PROVIDER)) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("정상적인 동작을 위해 위치 정보 활성화가 필요합니다. 위치 정보를 활성화 시키겠습니까?")
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.text_yes, new DialogInterface.OnClickListener() {
+                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            }
+                        })
+                        .setNegativeButton(R.string.text_no, new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                dialog.cancel();
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
+            }
+
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])) {
+                Toast.makeText(getApplicationContext(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
+                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
+            } else {
+                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
             }
         }
     }
-    private void showDialogForLocationServiceSetting(){
+
+    private void showDialogForLocationServiceSetting() {
         AlertDialog.Builder builder = new AlertDialog.Builder(BeerStoreManagerActivity.this);
         builder.setTitle("위치 서비스 비활성화");
         builder.setMessage("앱을 사용하기 위해 위치 서비스가 필요합니다.");
         builder.setCancelable(true);
-        builder.setPositiveButton("설정",new DialogInterface.OnClickListener(){
+        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                startActivityForResult(callGPSSettingIntent,GPS_ENABLE_REQUEST_CODE);
-
                 Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 activityResultLauncher.launch(callGPSSettingIntent);
-
-//                Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-//                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-//                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-//                startActivityIntent.launch(chooserIntent);
             }
         });
         builder.create().show();
@@ -194,7 +394,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == RESULT_OK) {
+                    if (result.getResultCode() == -1) {
                         Intent intent = result.getData();
                         Uri uri = intent.getData();
                     }
@@ -207,7 +407,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
             if (permission.equals(Manifest.permission.ACCESS_BACKGROUND_LOCATION) && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 continue;
             }
-            final int result = ContextCompat.checkSelfPermission(this, permission);
+            final int result = ContextCompat.checkSelfPermission(getApplicationContext(), permission);
 
             if (PackageManager.PERMISSION_GRANTED != result) {
                 return false;
@@ -216,30 +416,37 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements MapVi
         return true;
     }
 
-    public void MapMarker(MapView mapView, String MakerName, String detail, double startX, double startY) {
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord( startY, startX );
-        //mapView.setMapCenterPoint( mapPoint, true );
-        //true면 앱 실행 시 애니메이션 효과가 나오고 false면 애니메이션이 나오지않음.
+    public void MapMarker(MapView mapView, BeerStoreManager.StoreData storeData) {
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(storeData.lat, storeData.lng);
         MapPOIItem marker = new MapPOIItem();
-        marker.setItemName(MakerName+"("+detail+")"); // 마커 클릭 시 컨테이너에 담길 내용
-        marker.setMapPoint( mapPoint );
-        // 기본으로 제공하는 BluePin 마커 모양.
-        marker.setMarkerType( MapPOIItem.MarkerType.RedPin );
-        // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-        marker.setSelectedMarkerType( MapPOIItem.MarkerType.BluePin );
+        marker.setItemName(storeData.place_name);
+        marker.setMapPoint(mapPoint);
+        marker.setMarkerType(MapPOIItem.MarkerType.RedPin);
+        marker.setSelectedMarkerType(MapPOIItem.MarkerType.BluePin);
+        marker.setUserObject(storeData);
         mapView.addPOIItem( marker );
+        //mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
+        mapView.setPOIItemEventListener(this);
     }
-    public void CenterMarker(MapView mapView, double startX, double startY) {
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord( startY, startX );
-        //mapView.setMapCenterPoint( mapPoint, true );
-        //true면 앱 실행 시 애니메이션 효과가 나오고 false면 애니메이션이 나오지않음.
-        MapPOIItem marker = new MapPOIItem();
-        marker.setItemName("내 위치"); // 마커 클릭 시 컨테이너에 담길 내용
-        marker.setMapPoint( mapPoint );
-        // 기본으로 제공하는 BluePin 마커 모양.
-        marker.setMarkerType( MapPOIItem.MarkerType.YellowPin );
-        // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-        marker.setSelectedMarkerType( MapPOIItem.MarkerType.YellowPin );
-        mapView.addPOIItem( marker );
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ArrayList<String> tStr = new ArrayList<String>();
+        tStr.add(String.valueOf(storeDataList.size()));
+        for (BeerStoreManager.StoreData storeData : storeDataList) {
+            tStr.add(String.valueOf(storeData.distance));
+            tStr.add(storeData.place_name);
+            tStr.add(storeData.phone);
+        }
+
+        Bundle result = new Bundle();
+        result.putStringArrayList("data", tStr);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

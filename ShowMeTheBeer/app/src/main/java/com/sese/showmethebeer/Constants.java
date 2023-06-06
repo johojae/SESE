@@ -22,6 +22,8 @@ public class Constants {
 
     public static final String ACTIVITY_NAME_MAIN = "MainActivity";
 
+    public static final String TAG = "ShowBeTheBeerDebug";
+
     //REST API의 response에 사용되는 KEY
     /*"count": 1,
             "list": [

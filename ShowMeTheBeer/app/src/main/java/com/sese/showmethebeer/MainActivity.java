@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = new Intent(getApplicationContext(), BeerStoreViewpagerManagerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BeerStoreManagerActivity.class);
                 startActivity(intent);
             }
         });

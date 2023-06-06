@@ -3,9 +3,9 @@ package com.sese.showmethebeer;
 import java.util.ArrayList;
 import java.util.List;
 
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONException;
-import kong.unirest.json.JSONObject;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class BeerStoreManager {
     class StoreData {
@@ -44,10 +44,9 @@ public class BeerStoreManager {
     List<StoreData> storeList = new ArrayList<StoreData>();
     List<StoreData> makeStoreList(String jsonString)
     {
-        JSONObject responseJson = new JSONObject(jsonString);
-        List<StoreData> tempStoreList = new ArrayList<StoreData>();
-
         try {
+            JSONObject responseJson = new JSONObject(jsonString);
+            List<StoreData> tempStoreList = new ArrayList<StoreData>();
             JSONObject meta = responseJson.getJSONObject("meta");
             if(meta.has("is_end"))
             {
