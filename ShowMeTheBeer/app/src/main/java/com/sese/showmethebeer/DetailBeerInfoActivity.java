@@ -240,8 +240,8 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
             bitmap.recycle();
             bitmap = null;
+            d.setCallback(null);
         }
-        d.setCallback(null);
     }
 
     private String getCategoryText(String categoryId) {
