@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     RelativeLayout userGuideLayout;
     CoordinatorLayout mainMenuLayout;
+
+    int guideImageIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         boolean userGuideRead = sqLiteManager.checkUserGuideRead();
         System.out.println("MainActivity :: onResume : checkUserGuideRead:" + userGuideRead);
         if (!userGuideRead) { //기존에 user guide를 보여주지 않았으면
+            guideImageIndex = 0;
             showUserGuideLayout();
         } else {
             showMainLayout();
@@ -79,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView userGuideSkipImageView = userGuideLayout.findViewById(R.id.userGuideSkipImageView);
         ImageView userGuideNextImageView = userGuideLayout.findViewById(R.id.userGuideNextImageView);
+        ImageView userGuideImageView = userGuideLayout.findViewById(R.id.userGuideImageView);
+
+        showUserGuideMageView(userGuideImageView, getDrawableIndex());
 
         userGuideSkipImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,8 +95,48 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        userGuideNextImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (guideImageIndex >=3) {
+                    showMainLayout();
+                    sqLiteManager.updateUserGuideRead(true);
+                } else {
+                    if (guideImageIndex < 3) {
+                        guideImageIndex++;
+                    }
+                    showUserGuideMageView(userGuideImageView, getDrawableIndex());
+                }
+            }
+        });
     }
+
+    private int getDrawableIndex() {
+        int drawableIndex = R.drawable.guide1;
+        switch (guideImageIndex) {
+            case 0:
+                drawableIndex = R.drawable.guide0;
+                break;
+            case 1:
+                drawableIndex = R.drawable.guide1;
+                break;
+            case 2:
+                drawableIndex = R.drawable.guide2;
+                break;
+            case 3:
+                drawableIndex = R.drawable.guide3;
+                break;
+            default :
+                drawableIndex = R.drawable.guide0;
+                break;
+        }
+        return drawableIndex;
+    }
+
+    private void showUserGuideMageView(ImageView userGuideImageView, int resourceId) {
+        userGuideImageView.setImageResource(resourceId);
+    }
+
     private void showMainLayout() {
         userGuideLayout.setVisibility(View.GONE);
         mainMenuLayout.setVisibility(View.VISIBLE);

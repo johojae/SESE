@@ -2,6 +2,7 @@ package com.sese.showmethebeer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.URLSpan;
@@ -148,7 +149,7 @@ public class BeerListAdapter extends BaseAdapter {
     private void SetCatImage(int position, ViewHolder viewHolder, String categoryText, String country, String alcoholicity, String name, String url){
         if (url != null && url.length() > 0) {
             ImageLoadTask task = new ImageLoadTask(url, viewHolder.imageView, R.drawable.beer);
-            task.execute();
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         if (categoryText != null && !categoryText.isEmpty()) {

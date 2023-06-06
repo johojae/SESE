@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -240,8 +241,8 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
             bitmap.recycle();
             bitmap = null;
+            d.setCallback(null);
         }
-        d.setCallback(null);
     }
 
     private String getCategoryText(String categoryId) {
@@ -287,7 +288,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
             if (thumbnailUrl != null && thumbnailUrl.length() > 0) {
                 ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, beerImageView, R.drawable.app_icon);
-                task.execute();
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
             beerNameText.setText(objDetailBeerInfo.getName());
 
@@ -541,7 +542,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
         if (thumbnailUrl != null && thumbnailUrl.length() > 0) {
             ImageLoadTask task = imgLoadTaskMngr.createImageLoadTask(thumbnailUrl, imgView, R.drawable.app_icon);
-            task.execute();
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
