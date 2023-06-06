@@ -5,12 +5,14 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -38,6 +40,16 @@ public class BeerCategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer_category);
 
+        ImageButton button = (ImageButton) findViewById(R.id.category_home_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i= new Intent(getApplicationContext(), MainActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
+        });
+
         recyclerView = findViewById(R.id.category_recycle);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -63,9 +75,10 @@ public class BeerCategoryActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        /*getMenuInflater().inflate(R.menu.searchbar_menu, menu);
+        getMenuInflater().inflate(R.menu.searchbar_menu, menu);
         MenuItem menuItem = menu.findItem((R.id.search));
         SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint("맥주 이름을 입력하여 검색하세요.");
@@ -81,8 +94,9 @@ public class BeerCategoryActivity extends AppCompatActivity {
                 return false;
             }
 
-        });*/
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
+     */
 }

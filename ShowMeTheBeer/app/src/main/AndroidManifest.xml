@@ -53,7 +53,8 @@
         </activity>
         <activity
             android:name=".BeerRecommenderActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.ShowMeTheBeer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.internal.action.BEER_RECOMMENDER" />
             </intent-filter>
@@ -88,7 +89,8 @@
         </activity>
         <activity
             android:name=".BeerCategoryActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.ShowMeTheBeer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.internal.action.BEER_CATEGORY" />
             </intent-filter>
@@ -102,7 +104,8 @@
         </activity>
         <activity
             android:name=".DetailBeerInfoActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.ShowMeTheBeer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.internal.action.DETAIL_BEER_INFO" />
             </intent-filter>

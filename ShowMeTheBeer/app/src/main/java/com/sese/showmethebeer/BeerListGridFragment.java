@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 //import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,9 +57,11 @@ public class BeerListGridFragment extends Fragment {
                 mGridView.setAdapter(mGridAdapter);
             }
 
+            Log.v("hojae", "listener");
             mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int pos, long id){
+                    Log.v("hojae", "onItemClick");
                     onGridItemClick((GridView) parent, view, pos, id);
                 }
             });
@@ -81,6 +84,7 @@ public class BeerListGridFragment extends Fragment {
             return;
         }
 
+        Log.v("hojae", "pos:" + pos + " id:" + beers[pos].getBeerId());
         //Toast.makeText(activity,"Position Clicked:" + pos + " & Text is: " + beers[pos].getName(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getContext(), DetailBeerInfoActivity.class);
         intent.putExtra(Constants.INTENT_KEY_FROM, "BeerListActvity");
