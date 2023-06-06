@@ -171,13 +171,12 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             }
         }
 
-        handleBookMarkAndRatingView();
-
         scanFloatingBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), BeerClassifierActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -185,8 +184,13 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         showDetailBeerInfo();
     }
 
-    public void onDestroy() {
+    protected void onResume() {
+        super.onResume();
+    }
+
+    protected void onDestroy() {
         super.onDestroy();
+
         if (handler != null) {
             for (int i = MESSAGE_ID_DIALOG_START + 1; i < MESSAGE_ID_DIALOG_END; i++) {
                 handler.removeMessages(i);
@@ -237,6 +241,8 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         if (!networkConnected) {
             return;
         }
+        
+        handleBookMarkAndRatingView();
 
         if (objDetailBeerInfo != null) {
             String thumbnailUrl = objDetailBeerInfo.getThumbnail();
