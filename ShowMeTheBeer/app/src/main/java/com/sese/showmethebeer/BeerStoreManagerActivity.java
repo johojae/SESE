@@ -25,9 +25,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.util.Log;
-import android.view.WindowManager;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import net.daum.mf.map.api.MapPoint;
@@ -42,6 +40,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.os.Build;
+
 public class BeerStoreManagerActivity extends AppCompatActivity implements  MapView.CurrentLocationEventListener, MapView.POIItemEventListener{
 
     ViewGroup mMapViewContainer;
