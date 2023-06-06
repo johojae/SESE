@@ -260,7 +260,7 @@ public class BeerListActivity extends FragmentActivity{
 
                     ArrayList<String> rate =  sqLiteManager.getBeerIdsByRate(10);
                     for(int i = 0; i<rate.size(); i++){
-                        param.append(rate.get(i));
+                        param.append(rate.get(i)+";");
                     }
 
                     manager.send(ServerManager.SUB_API_INFO_BY_RECOMMEND_RATE_BEER_LIST + param, getRecommendRateListCallback());
