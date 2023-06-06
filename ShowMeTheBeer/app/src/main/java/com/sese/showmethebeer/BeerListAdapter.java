@@ -2,6 +2,9 @@ package com.sese.showmethebeer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,8 +118,11 @@ public class BeerListAdapter extends BaseAdapter {
 
         String parentCategory = beerCategoryJsonParser.GetParentCategoryName(categoryItemLists, beer.getCategoryId());
         String detailCategory = beerCategoryJsonParser.GetDetailCategoryName(categoryItemLists, beer.getCategoryId());
+        String categoryText = parentCategory +" > " + detailCategory;
 
-        SetCatImage(position, viewHolder, parentCategory, detailCategory, beer.getCountry(), beer.getAlcoholicity(), beer.getName(), beer.getThumbnail());
+        SetCatImage(position, viewHolder, categoryText, beer.getCountry(), beer.getAlcoholicity(), beer.getName(), beer.getThumbnail());
+
+
 
         if(beer.isNew()){
             viewHolder.imageViewNew = (View)view.findViewById(R.id.icon_id_view);
@@ -137,13 +143,19 @@ public class BeerListAdapter extends BaseAdapter {
         return view;
     }
 
-    private void SetCatImage(int position, ViewHolder viewHolder, String parentCategory, String detailCategory, String country, String alcoholicity, String name, String url){
+    private void SetCatImage(int position, ViewHolder viewHolder, String categoryText, String country, String alcoholicity, String name, String url){
         if (url != null && url.length() > 0) {
             ImageLoadTask task = new ImageLoadTask(url, viewHolder.imageView, R.drawable.beer);
             task.execute();
         }
 
-        viewHolder.textCategory.setText(parentCategory +" > " + detailCategory);
+        if (categoryText != null && !categoryText.isEmpty()) {
+            SpannableStringBuilder ssb = new SpannableStringBuilder();
+            SpannableStringBuilder append = ssb.append(categoryText);
+            ssb.setSpan(new URLSpan("#"), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            viewHolder.textCategory.setText(ssb, TextView.BufferType.SPANNABLE);
+        }
+
         viewHolder.textCountry.setText(country + " | ");
         viewHolder.textAlcoholicity.setText(alcoholicity);
         viewHolder.textName.setText(name);
