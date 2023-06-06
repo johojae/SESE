@@ -315,10 +315,11 @@ public class BeerListActivity extends FragmentActivity{
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                } else if (response.code() == 404) {
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER);
                 } else {
-
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                 }
-
             }
 
             @Override
@@ -345,10 +346,11 @@ public class BeerListActivity extends FragmentActivity{
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                } else if (response.code() == 404) {
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER);
                 } else {
-
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                 }
-
             }
 
             @Override
@@ -375,10 +377,11 @@ public class BeerListActivity extends FragmentActivity{
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                } else if (response.code() == 404) {
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER);
                 } else {
-
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                 }
-
             }
 
             @Override
@@ -405,10 +408,11 @@ public class BeerListActivity extends FragmentActivity{
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                } else if (response.code() == 404) {
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER);
                 } else {
-
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                 }
-
             }
 
             @Override
