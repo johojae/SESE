@@ -123,7 +123,7 @@ public class BeerListAdapter extends BaseAdapter {
 
         if(isUserInfo) {
             viewHolder.textRate = (TextView) view.findViewById(R.id.grid_beer_rate);
-            viewHolder.textRate.setText("☆ "+beer.getUserRating());
+            viewHolder.textRate.setText("☆ "+(0.0+beer.getUserRating())/2);
             viewHolder.textRate.setVisibility(View.VISIBLE);
         }
 
