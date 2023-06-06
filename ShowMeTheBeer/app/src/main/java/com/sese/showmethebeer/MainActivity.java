@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         userGuideLayout = binding.getRoot().getRootView().findViewById(R.id.userGuideLayout);
         mainMenuLayout = binding.getRoot().getRootView().findViewById(R.id.mainMenuLayout);
+
+        mainMenuLayout.findViewById(R.id.main_home_button).setVisibility(View.GONE);
 
         boolean userGuideRead = sqLiteManager.checkUserGuideRead();
         System.out.println("MainActivity :: OnCreate : checkUserGuideRead:" + userGuideRead);
@@ -212,7 +215,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BeerListActivity.class);
+                intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_USER_INFO);
                 startActivity(intent);
             }
         });

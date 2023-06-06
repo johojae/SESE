@@ -18,6 +18,9 @@ public class Constants {
 
     public static final String INTENT_VAL_RECOMMEND = "recommend";
 
+    public static final String INTENT_VAL_USER_INFO = "userinfo";
+    public static final String INTENT_KEY_USER_INFO_ID = "userinfoid";
+
     public static final String INTENT_KEY_TEST_MODE = "testmode";
 
     public static final String ACTIVITY_NAME_MAIN = "MainActivity";

@@ -409,8 +409,12 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         int rating = sqLiteManager.getRating(objDetailBeerInfo.getBeerId());
 
         if (rating != -1) { //-1이면, DB에 없음, nothing to do
+            markingState_marked = true;
             bookMark.setImageResource(R.drawable.book_marked);
             ratingBar.setRating(rating/2);
+        } else {
+            markingState_marked = false;
+            bookMark.setImageResource(R.drawable.book_unmarked);
         }
 
         bookMark.setOnClickListener(new View.OnClickListener() {

@@ -12,8 +12,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.sese.showmethebeer.data.DetailBeerInfo;
 import com.sese.showmethebeer.manager.ImageLoadTask;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ public class BeerListAdapter extends BaseAdapter {
         public TextView textCountry;
         public TextView textName;
         public TextView textAlcoholicity;
+
+        public TextView textRate;
     }
 
     private DetailBeerInfo[] items;
@@ -80,6 +86,11 @@ public class BeerListAdapter extends BaseAdapter {
         View view = convertView;
         ViewHolder viewHolder;
 
+        boolean isUserInfo = false;
+        DetailBeerInfo beer = items[position];
+        if(beer.getUserRating() != -1)
+            isUserInfo = true;
+
         if(view == null){
             view = mInflater.inflate(R.layout.grid_view_beer_item_list, parent, false);
             viewHolder = new ViewHolder();
@@ -100,8 +111,6 @@ public class BeerListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        DetailBeerInfo beer = items[position];
-
         List<CategoryItem> categoryItemLists = new ArrayList<>();
         BeerCategoryJsonParser beerCategoryJsonParser = new BeerCategoryJsonParser(view.getContext());
         categoryItemLists = beerCategoryJsonParser.GetCategoryItemLists();
@@ -112,7 +121,11 @@ public class BeerListAdapter extends BaseAdapter {
 
         SetCatImage(position, viewHolder, categoryText, beer.getCountry(), beer.getAlcoholicity(), beer.getName(), beer.getThumbnail());
 
-
+        if(isUserInfo) {
+            viewHolder.textRate = (TextView) view.findViewById(R.id.grid_beer_rate);
+            viewHolder.textRate.setText("☆ "+beer.getUserRating());
+            viewHolder.textRate.setVisibility(View.VISIBLE);
+        }
 
         if(beer.isNew()){
             viewHolder.imageViewNew = (View)view.findViewById(R.id.icon_id_view);
@@ -145,9 +158,13 @@ public class BeerListAdapter extends BaseAdapter {
             viewHolder.textCategory.setText(ssb, TextView.BufferType.SPANNABLE);
         }
 
+        //if(isUserInfo)
+        //    viewHolder.textRate.setText("⭐"+rate);
+
         viewHolder.textCountry.setText(country + " | ");
         viewHolder.textAlcoholicity.setText(alcoholicity);
         viewHolder.textName.setText(name);
+        //viewHolder.textRate2.setText("⭐"+rate);
     }
 
     @Override
