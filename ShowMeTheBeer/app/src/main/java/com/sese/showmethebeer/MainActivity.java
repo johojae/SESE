@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         userGuideLayout = binding.getRoot().getRootView().findViewById(R.id.userGuideLayout);
         mainMenuLayout = binding.getRoot().getRootView().findViewById(R.id.mainMenuLayout);
 
+        mainMenuLayout.findViewById(R.id.main_home_button).setVisibility(View.GONE);
+
         boolean userGuideRead = sqLiteManager.checkUserGuideRead();
         System.out.println("MainActivity :: OnCreate : checkUserGuideRead:" + userGuideRead);
 
