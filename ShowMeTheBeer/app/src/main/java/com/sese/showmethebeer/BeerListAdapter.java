@@ -118,7 +118,7 @@ public class BeerListAdapter extends BaseAdapter {
 
         SetCatImage(position, viewHolder, parentCategory, detailCategory, beer.getCountry(), beer.getAlcoholicity(), beer.getName(), beer.getThumbnail());
 
-        if(beer.getIsNew()){
+        if(beer.isNew()){
             viewHolder.imageViewNew = (View)view.findViewById(R.id.icon_id_view);
             viewHolder.imageViewNew.setVisibility(View.VISIBLE);
         }
