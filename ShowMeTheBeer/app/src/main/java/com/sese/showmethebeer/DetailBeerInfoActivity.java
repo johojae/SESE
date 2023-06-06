@@ -8,12 +8,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -203,8 +207,6 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
     }
 
     protected void onDestroy() {
-        super.onDestroy();
-
         if (handler != null) {
             for (int i = MESSAGE_ID_DIALOG_START + 1; i < MESSAGE_ID_DIALOG_END; i++) {
                 handler.removeMessages(i);
@@ -218,6 +220,24 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         if (imgLoadTaskMngr != null) {
             imgLoadTaskMngr.cancelAllImageLoadTask();
         }
+
+        clearBitMap(beerImageView);
+        clearBitMap(findViewById(R.id.smilarBeerImageView_1));
+        clearBitMap(findViewById(R.id.smilarBeerImageView_2));
+        clearBitMap(findViewById(R.id.smilarBeerImageView_3));
+
+        super.onDestroy();
+    }
+
+    private void clearBitMap(ImageView iv) {
+        Log.i(Constants.TAG, "clearBitMap");
+        Drawable d = iv.getDrawable();
+        if (d instanceof BitmapDrawable) {
+            Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+            bitmap.recycle();
+            bitmap = null;
+        }
+        d.setCallback(null);
     }
 
     private String getCategoryText(String categoryId) {

@@ -1,6 +1,7 @@
 package com.sese.showmethebeer.manager;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
+
+import com.sese.showmethebeer.Constants;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -34,17 +37,19 @@ public class ImageLoadTask extends AsyncTask <Void, Void, Bitmap> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        Log.i(Constants.TAG, "ImageLoadTask:: onPreExecute");
     }
 
     @Override
     protected Bitmap doInBackground(Void... voids) {
+        Log.i(Constants.TAG, "ImageLoadTask:: doInBackground");
         // 웹서버의 이미지 데이터를 받아 비트맵 객체로 만든다.
         Bitmap bitmap = null;
         try {
             // 메모리에 만들어진 후 해제되지 않으면 메모리에 계속 남아있는다.
             // 여러 이미지를 로딩하게 되면 메모리가 부족해지는 문제가 발생할 수 있으므로
             // 사용하지 않는 비트맵 객체는 recycle() 메소드를 이용해 즉시 해제시킨다.
-            if(hashMap.containsKey(urlStr)){  // 요청 주소가 들어있다면 비트맵을 꺼냄
+            if (hashMap.containsKey(urlStr)) {  // 요청 주소가 들어있다면 비트맵을 꺼냄
                 Bitmap oldBitmap = hashMap.remove(urlStr);
                 if(oldBitmap != null){
                     oldBitmap.recycle();    // 들어왔던 비트맵을 메모리에 제거
