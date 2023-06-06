@@ -137,6 +137,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements  MapV
         System.out.println("BeerStoreManagerActivity");
 
         setContentView(R.layout.activity_beer_store_manager_act);
+        getSupportActionBar().setTitle("주변 찾기");
         mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_mv_mapcontainer);
 
@@ -248,7 +249,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements  MapV
                 List<BeerStoreManager.StoreData> tempList = new ArrayList<BeerStoreManager.StoreData>();
 
                 try {
-                    tempList.addAll(new BeerStoreManager2(mCurrentLat, mCurrentLng, 20000).execute().get());
+                    tempList.addAll(new BeerStoreManagerAsyncTask(mCurrentLat, mCurrentLng, 20000).execute().get());
                     tempList.removeAll(storeDataList);
                     storeDataList.addAll(tempList);
                     int idx = 0;
@@ -287,7 +288,7 @@ public class BeerStoreManagerActivity extends AppCompatActivity implements  MapV
                     try {
                         sizeOfPoolOri = storeDataList.size();
 
-                        tempList.addAll(new BeerStoreManager2(mCurrentLat, mCurrentLng, 20000).execute().get());
+                        tempList.addAll(new BeerStoreManagerAsyncTask(mCurrentLat, mCurrentLng, 20000).execute().get());
 
                         sizeOfTemp = tempList.size();
 
