@@ -417,7 +417,7 @@ public class BeerListActivity extends FragmentActivity{
                         throw new RuntimeException(e);
                     }
                 } else if (response.code() == 404) {
-                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER);
+                    handler.sendEmptyMessage(MESSAGE_ID_RECOMMEND_RATE_BEER_INFO);
                 } else {
                     handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                 }
