@@ -31,32 +31,29 @@
             android:id="@+id/beer_list_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways">
-
-            <TableRow
+            android:background="?attr/colorPrimary">
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
+                <TextView
+                    android:id="@+id/beer_list_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="?actionBarSize"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"/>
                 <ImageButton
                     android:id="@+id/beer_list_home_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
+                    android:paddingRight="15dp"
                     android:minHeight="?actionBarSize"
                     android:background="@color/lavender"
                     android:src="@drawable/baseline_home_24" />
-
-                <TextView
-                    android:id="@+id/beer_list_title"
-                    android:layout_gravity="left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="?actionBarSize"
-                    android:padding="@dimen/appbar_padding"
-                    android:text="@string/app_name"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
-            </TableRow>
+            </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
         <TableLayout

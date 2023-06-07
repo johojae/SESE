@@ -84,7 +84,7 @@ public class BeerListActivity extends FragmentActivity{
 
                 case MESSAGE_ID_BEER_INFO_ID_INFO:
                     if(a.size() == 0){
-                        Toast.makeText(BeerListActivity.this, "아이템이 비어있습니다", Toast.LENGTH_SHORT).show(); //TODO
+                        Toast.makeText(BeerListActivity.this, "등록된 맥주가 없습니다.", Toast.LENGTH_SHORT).show(); //TODO
                     }
 
                     Iterator<DetailBeerInfo> it = a.iterator();
@@ -205,19 +205,21 @@ public class BeerListActivity extends FragmentActivity{
 
             userBeerInfoList.addAll(sqLiteManager.getUserBeerList());
 
-            String beerInfoSearchParameterById = new String();
+            if (!userBeerInfoList.isEmpty()) {
+                String beerInfoSearchParameterById = new String();
 
-            boolean firstFlag = true;
-            for(UserBeerInfo userBeerInfo:userBeerInfoList)
-            {
-                if(firstFlag)
-                    firstFlag = false;
-                else
-                    beerInfoSearchParameterById += ";";
-                beerInfoSearchParameterById += userBeerInfo.getBeerId();
+                boolean firstFlag = true;
+                for (UserBeerInfo userBeerInfo : userBeerInfoList) {
+                    if (firstFlag)
+                        firstFlag = false;
+                    else
+                        beerInfoSearchParameterById += ";";
+                    beerInfoSearchParameterById += userBeerInfo.getBeerId();
+                }
+                sendData("beerinfo/id", beerInfoSearchParameterById);
+            } else {
+                Toast.makeText(BeerListActivity.this, "저장된 맥주가 없어요!", Toast.LENGTH_SHORT).show();
             }
-
-            sendData("beerinfo/id", beerInfoSearchParameterById);
         }
 
         pager = (ViewPager2) findViewById(R.id.pager);
@@ -360,6 +362,7 @@ public class BeerListActivity extends FragmentActivity{
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+                handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
             }
         };
     }
@@ -391,6 +394,7 @@ public class BeerListActivity extends FragmentActivity{
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+                handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
             }
         };
     }
@@ -422,6 +426,7 @@ public class BeerListActivity extends FragmentActivity{
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+                handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
             }
         };
     }
@@ -453,6 +458,7 @@ public class BeerListActivity extends FragmentActivity{
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+                handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
             }
         };
     }
@@ -463,7 +469,7 @@ public class BeerListActivity extends FragmentActivity{
         builder.setTitle(R.string.dialog_error_title);
 
         if (messageIdErrDialog == MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER) {
-            Toast.makeText(BeerListActivity.this, "아이템이 비어있습니다", Toast.LENGTH_SHORT).show(); //TODO
+            Toast.makeText(BeerListActivity.this, "등록된 맥주가 없습니다.", Toast.LENGTH_SHORT).show(); //TODO
         }
         else {
             builder.setMessage(R.string.dialog_error_server_error);
@@ -513,12 +519,14 @@ public class BeerListActivity extends FragmentActivity{
                         throw new RuntimeException(e);
                     }
                 } else {
+                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 System.out.println("BeerListActivity::onFailure:" + e.getLocalizedMessage());
+                handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS);
             }
         };
     }
@@ -533,6 +541,12 @@ public class BeerListActivity extends FragmentActivity{
                 Intent intent = getIntent();
 
                 userBeerInfoList.addAll(sqLiteManager.getUserBeerList());
+
+                if (userBeerInfoList.isEmpty()) {
+                    Toast.makeText(BeerListActivity.this, "저장된 맥주가 없어요!", Toast.LENGTH_SHORT).show();
+                    return;
+
+                }
 
                 if(userBeerInfoList.equals(this.userBeerInfoList))
                     return;
