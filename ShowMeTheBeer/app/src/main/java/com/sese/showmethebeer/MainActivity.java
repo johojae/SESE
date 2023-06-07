@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     RelativeLayout userGuideLayout;
     CoordinatorLayout mainMenuLayout;
-
+	SearchView searchView;
+	
     int guideImageIndex = 0;
 
     @Override
@@ -152,12 +153,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SearchView searchView = mainMenuLayout.findViewById(R.id.beerSearchView);
-
+        searchView = mainMenuLayout.findViewById(R.id.beerSearchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
             @Override
             public boolean onQueryTextSubmit(String query){
-
+                if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this)) {
+                    showNoNetworkDialog();
+                    return false;
+                }
                 Intent intent = new Intent(MainActivity.this, BeerListActivity.class);
 
                 intent.putExtra(Constants.INTENT_KEY_CALLER, Constants.INTENT_VAL_SEARCH);
@@ -177,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
         showMenu();
         showFloatingActionButton();
 
+
+		//newBeerImageView.setVisibility(View.GONE); //Final
         newBeerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -224,9 +229,6 @@ public class MainActivity extends AppCompatActivity {
         menuRecommend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(getApplicationContext(), BeerRecommenderActivity.class); //TODO
-                //startActivity(intent);
-
                 if(!NetworkConnectionUtil.isNetworkAvailable(MainActivity.this)) {
                     showNoNetworkDialog();
                     return;

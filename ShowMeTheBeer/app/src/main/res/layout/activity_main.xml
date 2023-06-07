@@ -74,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="550dp"
             android:paddingLeft="20dp"
+            android:textSize="16dp"
             android:text="새로 나온 맥주를 만나보세요!"/>
 
         <ImageView

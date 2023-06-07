@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.zxing.client.android.Intents;
@@ -31,15 +32,22 @@ public class BeerClassifierActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+		
+		Log.i(Constants.TAG, "DetailBeerInfoActivity :: resultCode::" + resultCode + ", data: " + data);
+		if (data != null) {
+			Log.i(Constants.TAG, "DetailBeerInfoActivity :: resultCode cameraPermission::" + data.getBooleanExtra(Intents.Scan.MISSING_CAMERA_PERMISSION, false));
+			Log.i(Constants.TAG, "DetailBeerInfoActivity :: resultCode timeout::" + data.getBooleanExtra(Intents.Scan.TIMEOUT, false));
+
+		}
 
         if (resultCode == RESULT_OK) {
             if(requestCode == IntentIntegrator.REQUEST_CODE) {
                 IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
                 if (result != null) {
-                    if (result.getContents() != null) {
-                        Toast.makeText(this, "Scanned: " + result.getContents() + "\nFormat:" + result.getFormatName(), Toast.LENGTH_LONG).show(); //TODO
-                        String barcode = result.getContents();
-
+                    String barcode = result.getContents();
+                    if (barcode != null) {
+                        //Toast.makeText(DetailBeerInfoActivity.Activity, "바코드: " + result.getContents(), Toast.LENGTH_LONG).show();
+                        Log.i(Constants.TAG, "DetailBeerInfoActivity :: barcode::" + barcode);
                         Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
                         intent.putExtra(Constants.INTENT_KEY_BARCODE, barcode);
                         startActivity(intent);
@@ -52,7 +60,7 @@ public class BeerClassifierActivity extends AppCompatActivity {
                 finish();
             } else {
                 boolean mssingCameraPermission = data.getBooleanExtra(Intents.Scan.MISSING_CAMERA_PERMISSION, false);
-                boolean scanTimeOut = data.getBooleanExtra(Intents.Scan.MISSING_CAMERA_PERMISSION, false);
+                boolean scanTimeOut = data.getBooleanExtra(Intents.Scan.TIMEOUT, false);
                 if (mssingCameraPermission) {
                     showErrorDialog(MESSAGE_ID_DIALOG_NO_CAM_PERMISSION);
                 } else if (scanTimeOut) {
