@@ -1,6 +1,7 @@
 package com.sese.showmethebeer;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -30,6 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.zxing.client.android.Intents;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.sese.showmethebeer.data.DetailBeerInfo;
 import com.sese.showmethebeer.manager.DetailBeerInfoHelper;
 import com.sese.showmethebeer.manager.ImageLoadTask;
@@ -100,7 +104,16 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
     private static final int MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER = 1;
     private static final int MESSAGE_ID_DIALOG_ERROR_OTHERS = 2;
 
-    private static final int MESSAGE_ID_DIALOG_END = 3;
+    private static final int MESSAGE_ID_DIALOG_NO_NETWORK = 3;
+    private static final int MESSAGE_ID_DIALOG_END = 4;
+
+
+    //scan error dialog
+    private static final int MESSAGE_ID_DIALOG_NO_CAM_PERMISSION = 0;
+    private static final int MESSAGE_ID_DIALOG_TIMEOUT = 1;
+    private static final int MESSAGE_ID_DIALOG_ERROR_GENERAL = 2;
+    //scan error dialog
+
 
     final Handler handler = new Handler() {
         @SuppressLint("HandlerLeak")
@@ -113,6 +126,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                     break;
                 case MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER:
                 case MESSAGE_ID_DIALOG_ERROR_OTHERS:
+                case MESSAGE_ID_DIALOG_NO_NETWORK:
                     showErrorDialog(messageId);
                     break;
             }
@@ -122,6 +136,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(Constants.TAG, "DetailBeerInfoActivity: onCreate");
         setContentView(R.layout.activity_detail_beer_info);
 
         TextView title = (TextView) findViewById(R.id.detail_title);
@@ -145,11 +160,13 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         //TODO , barcode에서 오는 것이랑 beerId로 오는 것이랑 따로 챙길 것. 그리고 호출한 activity이름 넘겨줄것
+        String typeVal = intent.getStringExtra(Constants.INTENT_KEY_TYPE);
         String barcode = intent.getStringExtra(Constants.INTENT_KEY_BARCODE);
         String beerId = intent.getStringExtra(Constants.INTENT_KEY_BEERID);
         String from = intent.getStringExtra(Constants.INTENT_KEY_FROM);
 
-        System.out.println("DetailBeerInfoActivity barcode = " + barcode + ", beerId = " + beerId + " , from = " + from);
+        Log.i(Constants.TAG, "DetailBeerInfoActivity: typeVal = " + typeVal + "," +
+                " barcode = " + barcode + ", beerId = " + beerId + " , from = " + from);
 
         detailInfoNoNetworkLayout = findViewById(R.id.detailInfoNoNetworkLayout);
         detailInfoFullLayout = findViewById(R.id.detailInfoFullLayout);
@@ -199,12 +216,17 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
             }
         });
 
+        if (typeVal != null && typeVal.equalsIgnoreCase(Constants.INTENT_VAL_SCAN)) {
+            scanBeerBarcode();
+            return;
+        }
         //Server에서 DetailBeerInfo를 get해 온 후 , 맞게 UPDATE함.
         showDetailBeerInfo();
     }
 
     protected void onResume() {
         super.onResume();
+        Log.i(Constants.TAG, "DetailBeerInfoActivity: onResume");
     }
 
     protected void onDestroy() {
@@ -228,6 +250,93 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         clearBitMap(findViewById(R.id.smilarBeerImageView_3));
 
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.i(Constants.TAG, "DetailBeerInfoActivity :: resultCode::" + resultCode + ", data: " + data);
+        if (data != null) {
+            Log.i(Constants.TAG, "DetailBeerInfoActivity :: resultCode cameraPermission::" + data.getBooleanExtra(Intents.Scan.MISSING_CAMERA_PERMISSION, false));
+            Log.i(Constants.TAG, "DetailBeerInfoActivity :: resultCode timeout::" + data.getBooleanExtra(Intents.Scan.TIMEOUT, false));
+
+        }
+
+        if (resultCode == RESULT_OK) {
+            if(requestCode == IntentIntegrator.REQUEST_CODE) {
+                IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                if (result != null) {
+                    String barcode = result.getContents();
+                    if (barcode != null && !barcode.isEmpty()) { //barcode로 요청하는 경우
+                        requestDataByBarCode(barcode);
+                    }
+                }
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            if (data == null) { //backPressed
+                finish();
+            } else {
+                boolean missingCameraPermission = data.getBooleanExtra(Intents.Scan.MISSING_CAMERA_PERMISSION, false);
+                boolean scanTimeOut = data.getBooleanExtra(Intents.Scan.TIMEOUT, false);
+                if (missingCameraPermission) {
+                    showScanErrorDialog(MESSAGE_ID_DIALOG_NO_CAM_PERMISSION);
+                } else if (scanTimeOut) {
+                    showScanErrorDialog(MESSAGE_ID_DIALOG_ERROR_GENERAL);
+                } else {
+                    //backPressed
+                    finish();
+                }
+            }
+        } else { //error dialog 표시
+            showScanErrorDialog(MESSAGE_ID_DIALOG_ERROR_GENERAL);
+        }
+    }
+
+    private void showScanErrorDialog(int errorType) { //에러 발생
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.dialog_error_title);
+
+        if (errorType == MESSAGE_ID_DIALOG_NO_CAM_PERMISSION) {
+            builder.setMessage(R.string.dialog_error_camera_permission);
+
+            //사용자가 재시도하고자 하는 경우
+            builder.setPositiveButton(R.string.text_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish(); //activity 종료시킴
+                }
+            });
+
+        } else {
+            builder.setMessage(R.string.dialog_error_try_again);
+
+            //사용자가 재시도하고자 하는 경우
+            builder.setPositiveButton(R.string.text_yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    scanBeerBarcode();
+                }
+            });
+            //사용자가 재시도하고자 하지 않는 경우
+            builder.setNegativeButton(R.string.text_no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish(); //activity 종료시킴
+                }
+            });
+
+        }
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void scanBeerBarcode() {
+        new IntentIntegrator(DetailBeerInfoActivity.this)
+                .setBeepEnabled(false)
+                .initiateScan();
     }
 
     private void clearBitMap(ImageView iv) {
@@ -271,10 +380,10 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
 
         boolean networkConnected = NetworkConnectionUtil.isNetworkAvailable(context);
 
-        System.out.println("showDetailBeerInfo isNetworkAvailable::" + networkConnected);
+        Log.i(Constants.TAG, "DetailBeerInfoActivity: isNetworkAvailable::" + networkConnected);
 
         detailInfoNoNetworkLayout.setVisibility(networkConnected? View.GONE : View.VISIBLE);
-        System.out.println("showDetailBeerInfo detailInfoNoNetworkLayout::" + detailInfoNoNetworkLayout.getVisibility());
+        Log.i(Constants.TAG, "DetailBeerInfoActivity detailInfoNoNetworkLayout::" + detailInfoNoNetworkLayout.getVisibility());
         detailInfoFullLayout.setVisibility(networkConnected? View.VISIBLE : View.GONE);
 
         if (!networkConnected) {
@@ -626,7 +735,11 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 if (call.isCanceled()) {
                     //ignore
                 } else {
-                    handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS); //알 수 없는 에러가 발생한 경우
+                    if (!NetworkConnectionUtil.isNetworkAvailable(DetailBeerInfoActivity.this)) {
+                        handler.sendEmptyMessage(MESSAGE_ID_DIALOG_NO_NETWORK); //Network 연결 안되어 있을 때
+                    } else {
+                        handler.sendEmptyMessage(MESSAGE_ID_DIALOG_ERROR_OTHERS); //알 수 없는 에러가 발생한 경우
+                    }
                 }
             }
         };
@@ -658,8 +771,15 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                 }
             });
 
-        }
-        else {
+        } else if (messageIdErrDialog == MESSAGE_ID_DIALOG_NO_NETWORK) {
+            builder.setTitle("네트워크 에러");
+            builder.setMessage("네트워크가 연결 된 이후에 재시도 해주세요.");
+            builder.setPositiveButton(R.string.text_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        } else {
             builder.setMessage(R.string.dialog_error_server_error);
 
             builder.setPositiveButton(R.string.text_confirm, new DialogInterface.OnClickListener() {

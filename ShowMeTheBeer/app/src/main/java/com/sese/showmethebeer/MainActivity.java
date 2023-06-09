@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
 
-                Intent intent = new Intent(getApplicationContext(), HiddenMenuActivity.class);
+                Intent intent = new Intent(MainActivity.this, HiddenMenuActivity.class);
                 startActivity(intent);
                 return true;
             }
@@ -180,12 +180,10 @@ public class MainActivity extends AppCompatActivity {
         showMenu();
         showFloatingActionButton();
 
-
-		//newBeerImageView.setVisibility(View.GONE); //Final
         newBeerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
+                Intent intent = new Intent(MainActivity.this, DetailBeerInfoActivity.class);
                 intent.putExtra(Constants.INTENT_KEY_BEERID, "b00101"); //kelly
                 intent.putExtra(Constants.INTENT_KEY_FROM, Constants.ACTIVITY_NAME_MAIN);
                 startActivity(intent);
@@ -206,7 +204,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = new Intent(getApplicationContext(), BeerClassifierActivity.class);
+                //Intent intent = new Intent(MainActivity.this, BeerClassifierActivity.class);
+                Intent intent = new Intent(MainActivity.this, DetailBeerInfoActivity.class);
+                intent.putExtra(Constants.INTENT_KEY_TYPE, Constants.INTENT_VAL_SCAN);
                 startActivity(intent);
             }
         });
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = new Intent(getApplicationContext(), BeerCategoryActivity.class);
+                Intent intent = new Intent(MainActivity.this, BeerCategoryActivity.class);
                 startActivity(intent);
             }
         });
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = new Intent(getApplicationContext(), BeerStoreManagerActivity.class);
+                Intent intent = new Intent(MainActivity.this, BeerStoreManagerActivity.class);
                 startActivity(intent);
             }
         });
@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
+                Intent intent = new Intent(MainActivity.this, DetailBeerInfoActivity.class);
                 intent.putExtra(Constants.INTENT_KEY_BARCODE, "8801021213217");
                 intent.putExtra(Constants.INTENT_KEY_TEST_MODE, true);
                 startActivity(intent);

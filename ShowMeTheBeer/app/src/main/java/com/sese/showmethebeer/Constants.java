@@ -10,6 +10,13 @@ public class Constants {
 
     public static final String INTENT_KEY_CALLER = "caller";
     public static final String INTENT_KEY_CATEGORY_ID = "categoryid";
+
+
+    public static final String INTENT_KEY_TYPE = "type";
+
+
+    public static final String INTENT_VAL_SCAN = "scan";
+
     public static final String INTENT_VAL_CATEGORY = "category";
 
     public static final String INTENT_VAL_SEARCH = "search";
@@ -25,7 +32,7 @@ public class Constants {
 
     public static final String ACTIVITY_NAME_MAIN = "MainActivity";
 
-    public static final String TAG = "ShowBeTheBeerDebug";
+    public static final String TAG = "ShowMeTheBeerDebug";
 
     //REST API의 response에 사용되는 KEY
     /*"count": 1,
