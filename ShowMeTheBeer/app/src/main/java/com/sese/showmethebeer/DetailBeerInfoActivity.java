@@ -146,7 +146,7 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(getApplicationContext(), MainActivity.class);
+                Intent i= new Intent(DetailBeerInfoActivity.this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
             }
@@ -210,9 +210,11 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
         scanFloatingBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), BeerClassifierActivity.class);
-                startActivity(intent);
-                finish();
+                objDetailBeerInfo = null;
+                scanBeerBarcode();
+                //Intent intent = new Intent(getApplicationContext(), BeerClassifierActivity.class);
+                //startActivity(intent);
+                //finish();
             }
         });
 
@@ -760,8 +762,9 @@ public class DetailBeerInfoActivity extends AppCompatActivity {
                         showNoNetworkDialog();
                         return;
                     }
-                    Intent intent = new Intent(getApplicationContext(), BeerCategoryActivity.class);
-                    startActivity(intent);
+                    Intent i= new Intent(DetailBeerInfoActivity.this, MainActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
                 }
             });
             builder.setNegativeButton(R.string.text_no, new DialogInterface.OnClickListener() {
