@@ -65,6 +65,8 @@ public class BeerListActivity extends FragmentActivity{
     private static final int MESSAGE_ID_SEARCH_BEER_INFO = 3;
     private static final int MESSAGE_ID_BEER_INFO_ID_INFO = 4;
 
+    private static final int MESSAGE_ID_BEER_INFO_ID_INFO_EMPTY = 5;
+
     private static final int MESSAGE_ID_DIALOG_ERROR_NOT_FOUND_BEER = 100;
     private static final int MESSAGE_ID_DIALOG_ERROR_OTHERS = 101;
 
@@ -126,6 +128,14 @@ public class BeerListActivity extends FragmentActivity{
 
                     mIndicator.setViewPager(pager);
 
+                    break;
+                case MESSAGE_ID_BEER_INFO_ID_INFO_EMPTY:
+                    gridFragments = new ArrayList<BeerListGridFragment>();
+
+                    pm = new PagerAdapter(BeerListActivity.this, gridFragments);
+                    pager.setAdapter(pm);
+
+                    mIndicator.setViewPager(pager);
                     break;
                 case MESSAGE_ID_RECOMMEND_NEW_BEER_INFO:
                     sendData("rate", null);
@@ -544,11 +554,16 @@ public class BeerListActivity extends FragmentActivity{
 
                 if (userBeerInfoList.isEmpty()) {
                     Toast.makeText(BeerListActivity.this, "저장된 맥주가 없어요!", Toast.LENGTH_SHORT).show();
+
+                    for(int i = 0; i < pager.getAdapter().getItemCount(); i++)
+                        pager.getAdapter().notifyItemRemoved(i);
+                    pager.getAdapter().notifyItemRangeRemoved(0,pager.getAdapter().getItemCount());
+
+                    handler.sendEmptyMessage(MESSAGE_ID_BEER_INFO_ID_INFO_EMPTY);
+
                     return;
-
                 }
-
-                if(userBeerInfoList.equals(this.userBeerInfoList))
+                else if(userBeerInfoList.equals(this.userBeerInfoList))
                     return;
 
                 beerList.clear();
