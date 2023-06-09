@@ -47,11 +47,10 @@ public class BeerClassifierActivity extends AppCompatActivity {
                     String barcode = result.getContents();
                     if (barcode != null) {
                         //Toast.makeText(DetailBeerInfoActivity.Activity, "바코드: " + result.getContents(), Toast.LENGTH_LONG).show();
-                        Log.i(Constants.TAG, "DetailBeerInfoActivity :: barcode::" + barcode);
-                        Intent intent = new Intent(getApplicationContext(), DetailBeerInfoActivity.class);
+                        Log.i(Constants.TAG, "BeerClassifierActivity :: barcode::" + barcode);
+                        Intent intent = new Intent(BeerClassifierActivity.this, DetailBeerInfoActivity.class);
                         intent.putExtra(Constants.INTENT_KEY_BARCODE, barcode);
                         startActivity(intent);
-                        finish(); //activity 종료시킴
                     }
                 }
             }
@@ -62,21 +61,21 @@ public class BeerClassifierActivity extends AppCompatActivity {
                 boolean mssingCameraPermission = data.getBooleanExtra(Intents.Scan.MISSING_CAMERA_PERMISSION, false);
                 boolean scanTimeOut = data.getBooleanExtra(Intents.Scan.TIMEOUT, false);
                 if (mssingCameraPermission) {
-                    showErrorDialog(MESSAGE_ID_DIALOG_NO_CAM_PERMISSION);
+                    showScanErrorDialog(MESSAGE_ID_DIALOG_NO_CAM_PERMISSION);
                 } else if (scanTimeOut) {
-                    showErrorDialog(MESSAGE_ID_DIALOG_ERROR_GENERAL);
+                    showScanErrorDialog(MESSAGE_ID_DIALOG_ERROR_GENERAL);
                 } else {
                     //backPressed
                     finish();
                 }
             }
         } else { //error dialog 표시
-            showErrorDialog(MESSAGE_ID_DIALOG_ERROR_GENERAL);
+            showScanErrorDialog(MESSAGE_ID_DIALOG_ERROR_GENERAL);
         }
     }
 
 
-    private void showErrorDialog(int errorType) { //에러 발생
+    private void showScanErrorDialog(int errorType) { //에러 발생
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(R.string.dialog_error_title);
